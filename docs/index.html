@@ -379,10 +379,10 @@
         }
 
         .answer-display {
-            background-color: var(--color-gray-200);
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
+              background-color: var(--color-surface);
+              padding: 15px;
+              border-radius: 8px;
+              margin: 15px 0;
         }
 
         .answer-display h4 {
@@ -1154,11 +1154,44 @@
             }
 
             getFeedback(guess, answer) {
+                // Define partial match logic
+                // Body: partial if both are SUV-like, or both are hatchback/wagon, etc.
+                const suvBodies = ['SUV', 'Crossover'];
+                const carBodies = ['Sedan', 'Coupe', 'Convertible'];
+                const hatchWagon = ['Hatchback', 'Wagon'];
+
+                let bodyMatch = 'incorrect';
+                if (guess.body === answer.body) {
+                    bodyMatch = 'correct';
+                } else if (
+                    (suvBodies.includes(guess.body) && suvBodies.includes(answer.body)) ||
+                    (carBodies.includes(guess.body) && carBodies.includes(answer.body)) ||
+                    (hatchWagon.includes(guess.body) && hatchWagon.includes(answer.body))
+                ) {
+                    bodyMatch = 'partial';
+                }
+
+                // Origin: partial if both are European, Asian, or American
+                const europe = ['GER', 'FRA', 'ITA', 'ESP', 'CZE', 'ROM', 'GBR', 'SWE'];
+                const asia = ['JPN', 'KOR', 'CHN', 'IND'];
+                const america = ['USA', 'CAN', 'MEX'];
+
+                let originMatch = 'incorrect';
+                if (guess.origin === answer.origin) {
+                    originMatch = 'correct';
+                } else if (
+                    (europe.includes(guess.origin) && europe.includes(answer.origin)) ||
+                    (asia.includes(guess.origin) && asia.includes(answer.origin)) ||
+                    (america.includes(guess.origin) && america.includes(answer.origin))
+                ) {
+                    originMatch = 'partial';
+                }
+
                 return {
                     make: guess.make === answer.make ? 'correct' : 'incorrect',
                     model: guess.model === answer.model ? 'correct' : 'incorrect',
-                    body: guess.body === answer.body ? 'correct' : 'incorrect',
-                    origin: guess.origin === answer.origin ? 'correct' : 'incorrect',
+                    body: bodyMatch,
+                    origin: originMatch,
                     power: guess.power === answer.power ? 'correct' : 'incorrect'
                 };
             }
