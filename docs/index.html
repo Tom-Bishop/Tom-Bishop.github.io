@@ -897,6 +897,10 @@
                 this.startTime = null;
                 this.endTime = null;
                 
+                // Daily completion tracking
+                this.todayString = new Date().toISOString().split('T')[0];
+                this.dailyDone = this.checkDailyDone();
+                
                 // Initialize game
                 this.initializeGame();
                 this.setupEventListeners();
@@ -908,6 +912,9 @@
                 this.selectCar();
                 this.renderGameBoard();
                 this.updateModeIndicator();
+                if (this.currentGameMode === 'daily' && this.dailyDone) {
+                    this.disableDaily();
+                }
             }
 
             loadGameMode() {
@@ -980,6 +987,23 @@
                 const seconds = Math.floor((elapsed % 60000) / 1000);
                 
                 return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+
+            checkDailyDone() {
+                const doneDate = localStorage.getItem('cardleDailyDone');
+                return doneDate === this.todayString;
+            }
+
+            setDailyDone() {
+                localStorage.setItem('cardleDailyDone', this.todayString);
+            }
+
+            disableDaily() {
+                this.gameOver = true;
+                const grid = document.getElementById('gameGrid');
+                grid.innerHTML = '<div style="text-align:center;padding:2em;font-size:1.2em;">You have completed today\'s daily!<br>Come back tomorrow for a new challenge.</div>';
+                document.getElementById('submitGuessBtn').disabled = true;
+                document.getElementById('carInput').disabled = true;
             }
 
             setupEventListeners() {
@@ -1113,7 +1137,7 @@
 
             submitGuess() {
                 if (this.gameOver) return;
-
+                if (this.currentGameMode === 'daily' && this.dailyDone) return;
                 const input = document.getElementById('carInput');
                 const guessText = input.value.trim();
                 
@@ -1280,9 +1304,12 @@
                 this.gameOver = true;
                 this.gameWon = won;
                 this.endTime = Date.now();
-                
+                // Mark daily as done if daily mode
+                if (this.currentGameMode === 'daily') {
+                    this.setDailyDone();
+                    this.dailyDone = true;
+                }
                 this.saveGameStats();
-                
                 setTimeout(() => {
                     if (won) {
                         this.showWinModal();
@@ -1398,13 +1425,16 @@
             saveGameStats() {
                 const stats = this.getStats();
                 const mode = this.currentGameMode;
-                
                 if (!stats[mode]) {
-                    stats[mode] = { played: 0, won: 0, streak: 0, maxStreak: 0 };
+                    stats[mode] = { played: 0, won: 0, streak: 0, maxStreak: 0, totalTime: 0, avgTime: 0 };
                 }
-                
                 stats[mode].played++;
-                
+                // Calculate time for this game
+                const elapsed = this.endTime && this.startTime ? (this.endTime - this.startTime) : 0;
+                if (elapsed > 0) {
+                    stats[mode].totalTime = (stats[mode].totalTime || 0) + elapsed;
+                    stats[mode].avgTime = Math.round(stats[mode].totalTime / stats[mode].played);
+                }
                 if (this.gameWon) {
                     stats[mode].won++;
                     stats[mode].streak++;
@@ -1412,7 +1442,6 @@
                 } else {
                     stats[mode].streak = 0;
                 }
-                
                 localStorage.setItem('cardleStats', JSON.stringify(stats));
             }
 
@@ -1425,27 +1454,34 @@
                 const stats = this.getStats();
                 const statsContent = document.getElementById('statsContent');
                 
-                const dailyStats = stats.daily || { played: 0, won: 0, streak: 0, maxStreak: 0 };
-                const randomStats = stats.random || { played: 0, won: 0, streak: 0, maxStreak: 0 };
+                const dailyStats = stats.daily || { played: 0, won: 0, streak: 0, maxStreak: 0, avgTime: 0 };
+                const randomStats = stats.random || { played: 0, won: 0, streak: 0, maxStreak: 0, avgTime: 0 };
                 
                 const dailyWinRate = dailyStats.played > 0 ? Math.round((dailyStats.won / dailyStats.played) * 100) : 0;
                 const randomWinRate = randomStats.played > 0 ? Math.round((randomStats.won / randomStats.played) * 100) : 0;
                 
+                function msToTime(ms) {
+                    if (!ms || ms <= 0) return '00:00';
+                    const minutes = Math.floor(ms / 60000);
+                    const seconds = Math.floor((ms % 60000) / 1000);
+                    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                }
                 statsContent.innerHTML = `
-                    <div class="help-section">
-                        <h3>Daily Challenge</h3>
-                        <p>Games Played: ${dailyStats.played}</p>
-                        <p>Win Rate: ${dailyWinRate}%</p>
-                        <p>Current Streak: ${dailyStats.streak}</p>
-                        <p>Max Streak: ${dailyStats.maxStreak}</p>
-                    </div>
-                    <div class="help-section">
-                        <h3>Random Mode</h3>
-                        <p>Games Played: ${randomStats.played}</p>
-                        <p>Win Rate: ${randomWinRate}%</p>
-                        <p>Current Streak: ${randomStats.streak}</p>
-                        <p>Max Streak: ${randomStats.maxStreak}</p>
-                    </div>
+                    <h4>Daily Challenge</h4>
+                    <div>Games Played: ${dailyStats.played}</div>
+                    <div>Games Won: ${dailyStats.won}</div>
+                    <div>Win Rate: ${dailyWinRate}%</div>
+                    <div>Current Streak: ${dailyStats.streak}</div>
+                    <div>Max Streak: ${dailyStats.maxStreak}</div>
+                    <div>Average Time: ${msToTime(dailyStats.avgTime)}</div>
+                    <hr>
+                    <h4>Random Mode</h4>
+                    <div>Games Played: ${randomStats.played}</div>
+                    <div>Games Won: ${randomStats.won}</div>
+                    <div>Win Rate: ${randomWinRate}%</div>
+                    <div>Current Streak: ${randomStats.streak}</div>
+                    <div>Max Streak: ${randomStats.maxStreak}</div>
+                    <div>Average Time: ${msToTime(randomStats.avgTime)}</div>
                 `;
                 
                 this.showModal('statsModal');
