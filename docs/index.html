@@ -43,7 +43,17 @@
             --color-warning: var(--color-yellow-500);
             --color-error: var(--color-red-500);
         }
-
+        body.dark-mode {
+            --color-background: var(--color-charcoal-800);
+            --color-surface: var(--color-charcoal-700);
+            --color-text: var(--color-cream-50);
+            --color-text-muted: var(--color-gray-300);
+            --color-border: var(--color-gray-400);
+            --color-primary: var(--color-teal-300);
+            --color-success: var(--color-green-500);
+            --color-warning: var(--color-yellow-500);
+            --color-error: var(--color-red-400);
+        }
         * {
             margin: 0;
             padding: 0;
@@ -541,6 +551,13 @@
                     </svg>
                     Stats
                 </button>
+                <button class="btn btn--outline btn--sm" id="darkModeBtn" title="Toggle dark mode">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
+                        <path d="M12 2a10 10 0 0 0 0 20c5.523 0 10-4.477 10-10" stroke="currentColor" stroke-width="2" fill="none"/>
+                    </svg>
+                    Dark Mode
+                </button>
             </div>
         </header>
 
@@ -971,6 +988,7 @@
                 const modeToggleBtn = document.getElementById('modeToggleBtn');
                 const helpBtn = document.getElementById('helpBtn');
                 const statsBtn = document.getElementById('statsBtn');
+                const darkModeBtn = document.getElementById('darkModeBtn');
 
                 // Input and autocomplete
                 carInput.addEventListener('input', (e) => this.handleInput(e));
@@ -983,6 +1001,7 @@
                 // Modal buttons
                 helpBtn.addEventListener('click', () => this.showModal('helpModal'));
                 statsBtn.addEventListener('click', () => this.showStats());
+                darkModeBtn.addEventListener('click', () => this.toggleDarkMode());
 
                 // Click outside modal to close
                 document.addEventListener('click', (e) => {
@@ -1360,6 +1379,31 @@
                 `;
                 
                 this.showModal('statsModal');
+            }
+
+            toggleDarkMode() {
+                const body = document.body;
+                body.classList.toggle('dark-mode');
+                
+                const isDarkMode = body.classList.contains('dark-mode');
+                const darkModeBtn = document.getElementById('darkModeBtn');
+                
+                if (isDarkMode) {
+                    darkModeBtn.innerHTML = `
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
+                            <path d="M12 2a10 10 0 0 0 0 20c5.523 0 10-4.477 10-10" stroke="currentColor" stroke-width="2" fill="none"/>
+                        </svg>
+                        Light Mode
+                    `;
+                } else {
+                    darkModeBtn.innerHTML = `
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10" fill="currentColor"/>
+                        </svg>
+                        Dark Mode
+                    `;
+                }
             }
 
             showModal(modalId) {
