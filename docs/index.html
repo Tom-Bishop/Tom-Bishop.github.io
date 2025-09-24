@@ -1154,7 +1154,26 @@
             }
 
             getFeedback(guess, answer) {
-                // Define partial match logic
+                // Parent company groups for partial make match
+                const parentGroups = [
+                    ['Volkswagen', 'Skoda', 'Audi', 'SEAT', 'Porsche'], // VW Group
+                    ['Toyota', 'Lexus'],
+                    ['Hyundai', 'Kia', 'Genesis'],
+                    ['BMW', 'Mini'],
+                    ['Mercedes-Benz', 'Smart'],
+                    ['Renault', 'Dacia', 'Nissan', 'Infiniti'],
+                    ['Fiat', 'Alfa Romeo', 'Lancia', 'Maserati', 'Ferrari'],
+                    ['Ford', 'Lincoln'],
+                    ['Chevrolet', 'GMC', 'Cadillac', 'Buick'],
+                    ['Jaguar', 'Land Rover'],
+                    ['Peugeot', 'Citroën'],
+                    ['Ram', 'Dodge', 'Jeep', 'Chrysler']
+                ];
+
+                function sameParentGroup(make1, make2) {
+                    return parentGroups.some(group => group.includes(make1) && group.includes(make2));
+                }
+
                 // Body: partial if both are SUV-like, or both are hatchback/wagon, etc.
                 const suvBodies = ['SUV', 'Crossover'];
                 const carBodies = ['Sedan', 'Coupe', 'Convertible'];
@@ -1187,12 +1206,30 @@
                     originMatch = 'partial';
                 }
 
+                // Make: partial if same parent group
+                let makeMatch = 'incorrect';
+                if (guess.make === answer.make) {
+                    makeMatch = 'correct';
+                } else if (sameParentGroup(guess.make, answer.make)) {
+                    makeMatch = 'partial';
+                }
+
+                // Power: partial if both are electrified (HYB/EV), or both are non-ICE (HYB/EV)
+                let powerMatch = 'incorrect';
+                if (guess.power === answer.power) {
+                    powerMatch = 'correct';
+                } else if (
+                    (['HYB', 'EV'].includes(guess.power) && ['HYB', 'EV'].includes(answer.power))
+                ) {
+                    powerMatch = 'partial';
+                }
+
                 return {
-                    make: guess.make === answer.make ? 'correct' : 'incorrect',
+                    make: makeMatch,
                     model: guess.model === answer.model ? 'correct' : 'incorrect',
                     body: bodyMatch,
                     origin: originMatch,
-                    power: guess.power === answer.power ? 'correct' : 'incorrect'
+                    power: powerMatch
                 };
             }
 
