@@ -1,419 +1,334 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cardle - Guess the Car!</title>
+    <title>Cardle - Modern Tech Edition</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --color-background: #f8fafc;
-            --color-surface: #fff;
-            --color-primary: #0ea5e9;
-            --color-primary-dark: #0369a1;
-            --color-success: #22c55e;
-            --color-warning: #f59e0b;
-            --color-error: #ef4444;
-            --color-text: #1e293b;
-            --color-text-muted: #64748b;
-            --color-border: #e2e8f0;
+            --bg: #18181b;
+            --surface: #23232a;
+            --primary: #10a37f;
+            --primary-hover: #0e8c6c;
+            --error: #ef4444;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --text: #e5e7eb;
+            --text-muted: #a1a1aa;
+            --border: #31313a;
+            --radius: 12px;
+            --shadow: 0 4px 32px rgba(0,0,0,0.18);
+            --transition: 0.2s;
         }
         body {
             font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
-            background: var(--color-background);
-            color: var(--color-text);
+            background: var(--bg);
+            color: var(--text);
             margin: 0;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            transition: background var(--transition);
         }
-        .app {
-            max-width: 600px;
-                    margin: 40px auto;
-                    background: var(--color-surface);
-                    border-radius: 16px;
-                    box-shadow: 0 4px 32px rgba(0,0,0,0.08);
-                    padding: 32px 24px;
-                }
-                .header {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    margin-bottom: 24px;
-                }
-                .game-title {
-                    font-size: 2.5rem;
-                    font-weight: 900;
-                    letter-spacing: -0.03em;
-                    color: var(--color-primary);
-                }
-                .game-mode-indicator {
-                    font-size: 1rem;
-                    color: var(--color-text-muted);
-                    margin-top: 4px;
-                }
-                .btn {
-                    padding: 8px 16px;
-                    border-radius: 8px;
-                    border: 1px solid var(--color-border);
-                    background: var(--color-surface);
-                    color: var(--color-primary-dark);
-                    font-weight: 600;
-                    font-size: 1rem;
-                    cursor: pointer;
-                    transition: background 0.2s, color 0.2s;
-                }
-                .btn--primary {
-                    background: var(--color-primary);
-                    color: #fff;
-                    border: none;
-                }
-                .btn--primary:hover {
-                    background: var(--color-primary-dark);
-                }
-                .btn:disabled {
-                    opacity: 0.5;
-                    cursor: not-allowed;
-                }
-                .form-control {
-                    width: 100%;
-                    padding: 12px;
-                    border-radius: 8px;
-                    border: 1.5px solid var(--color-border);
-                    font-size: 1rem;
-                    margin-bottom: 8px;
-                }
-                .form-control:focus {
-                    outline: none;
-                    border-color: var(--color-primary);
-                }
-                .autocomplete-dropdown {
-                    position: absolute;
-                    left: 0; right: 0; top: 100%;
-                    background: var(--color-surface);
-                    border: 1px solid var(--color-border);
-                    border-top: none;
-                    border-radius: 0 0 8px 8px;
-                    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-                    z-index: 10;
-                }
-                .autocomplete-item {
-                    padding: 10px 16px;
-                    cursor: pointer;
-                    border-bottom: 1px solid var(--color-border);
-                }
-                .autocomplete-item:last-child {
-                    border-bottom: none;
-                }
-                .autocomplete-item:hover {
-                    background: var(--color-background);
-                }
-                .hidden {
-                    display: none;
-                }
-                .game-board {
-                    margin: 32px 0;
-                }
-                .board-headers {
-                    display: grid;
-                    grid-template-columns: repeat(5, 1fr);
-                    gap: 8px;
-                    margin-bottom: 12px;
-                }
-                .header-cell {
-                    text-align: center;
-                    font-size: 1rem;
-                    font-weight: 700;
-                    color: var(--color-text-muted);
-                    padding: 8px 0;
-                }
-                .game-grid {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 8px;
-                }
-                .guess-row {
-                    display: grid;
-                    grid-template-columns: repeat(5, 1fr);
-                    gap: 8px;
-                }
-                .guess-cell {
-                    aspect-ratio: 1;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-size: 1rem;
-                    font-weight: 700;
-                    border-radius: 8px;
-                    border: 2px solid var(--color-border);
-                    background: var(--color-surface);
-                    transition: background 0.2s, color 0.2s;
-                }
-                .guess-cell.correct {
-                    background: var(--color-success);
-                    color: #fff;
-                    border-color: var(--color-success);
-                }
-                .guess-cell.partial {
-                    background: var(--color-warning);
-                    color: #fff;
-                    border-color: var(--color-warning);
-                }
-                .guess-cell.incorrect {
-                    background: var(--color-error);
-                    color: #fff;
-                    border-color: var(--color-error);
-                }
-                .timer {
-                    position: fixed;
-                    top: 24px;
-                    right: 24px;
-                    background: var(--color-surface);
-                    border-radius: 8px;
-                    border: 1px solid var(--color-border);
-                    padding: 8px 16px;
-                    font-size: 1rem;
-                    color: var(--color-text-muted);
-                    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-                }
-                .modal {
-                    display: none;
-                    position: fixed;
-                    top: 0; left: 0; width: 100vw; height: 100vh;
-                    background: rgba(0,0,0,0.4);
-                    z-index: 100;
-                    align-items: center;
-                    justify-content: center;
-                }
-                .modal.show {
-                    display: flex;
-                }
-                .modal-content {
-                    background: var(--color-surface);
-                    border-radius: 16px;
-                    padding: 32px 24px;
-                    box-shadow: 0 4px 32px rgba(0,0,0,0.12);
-                    max-width: 400px;
-                    width: 90vw;
-                }
-                .modal-title {
-                    font-size: 1.5rem;
-                    font-weight: 800;
-                    color: var(--color-primary);
-                    margin-bottom: 12px;
-                }
-                .modal-body {
-                    color: var(--color-text-muted);
-                    margin-bottom: 24px;
-                }
-                .modal-actions {
-                    display: flex;
-                    gap: 12px;
-                    justify-content: center;
-                }
-                .answer-display {
-                    background: var(--color-background);
-                    border-radius: 8px;
-                    padding: 16px;
-                    margin: 16px 0;
-                }
-                .answer-details {
-                    display: grid;
-                    grid-template-columns: repeat(5, 1fr);
-                    gap: 8px;
-                }
-                .answer-item {
-                    text-align: center;
-                }
-                .answer-label {
-                    font-size: 0.85rem;
-                    color: var(--color-text-muted);
-                    font-weight: 600;
-                }
-                .answer-value {
-                    font-size: 1rem;
-                    color: var(--color-primary-dark);
-                    font-weight: 700;
-                }
-                @media (max-width: 700px) {
-                    .app {
-                        padding: 16px 4px;
-                    }
-                    .game-title {
-                        font-size: 2rem;
-                    }
-                    .modal-content {
-                        padding: 16px 8px;
-                    }
-                }
-            </style>
+        .container {
+            width: 100%;
+            max-width: 480px;
+            margin: 48px auto 0 auto;
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 32px 20px 24px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        .title {
+            font-size: 2.2rem;
+            font-weight: 900;
+            letter-spacing: -0.03em;
+            color: var(--primary);
+        }
+        .mode-toggle {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1rem;
+            cursor: pointer;
+            padding: 0 8px;
+            border-radius: var(--radius);
+            transition: color var(--transition);
+        }
+        .mode-toggle.active {
+            color: var(--primary);
+        }
+        .timer {
+            font-size: 1rem;
+            color: var(--text-muted);
+            background: var(--surface);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 6px 16px;
+            margin-left: auto;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            text-align: center;
+            margin-bottom: 8px;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            position: relative;
+        }
+        .input {
+            width: 100%;
+            padding: 12px;
+            border-radius: var(--radius);
+            border: 1.5px solid var(--border);
+            font-size: 1rem;
+            background: var(--bg);
+            color: var(--text);
+            outline: none;
+            transition: border var(--transition);
+        }
+        .input:focus {
+            border-color: var(--primary);
+        }
+        .autocomplete {
+            position: absolute;
+            left: 0; right: 0; top: 100%;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-top: none;
+            border-radius: 0 0 var(--radius) var(--radius);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+            z-index: 10;
+            max-height: 220px;
+            overflow-y: auto;
+        }
+        .autocomplete-item {
+            padding: 10px 16px;
+            cursor: pointer;
+            border-bottom: 1px solid var(--border);
+            color: var(--text);
+            transition: background var(--transition);
+        }
+        .autocomplete-item:last-child {
+            border-bottom: none;
+        }
+        .autocomplete-item:hover {
+            background: var(--primary);
+            color: #fff;
+        }
+        .hidden { display: none; }
+        .game-board {
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .board-headers {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .header-cell {
+            text-align: center;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            padding: 8px 0;
+        }
+        .game-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .guess-row {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+        }
+        .guess-cell {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: var(--radius);
+            border: 2px solid var(--border);
+            background: var(--surface);
+            transition: background var(--transition), color var(--transition);
+        }
+        .guess-cell.correct {
+            background: var(--success);
+            color: #fff;
+            border-color: var(--success);
+        }
+        .guess-cell.partial {
+            background: var(--warning);
+            color: #fff;
+            border-color: var(--warning);
+        }
+        .guess-cell.incorrect {
+            background: var(--error);
+            color: #fff;
+            border-color: var(--error);
+        }
+        .btn {
+            padding: 10px 20px;
+            border-radius: var(--radius);
+            border: none;
+            background: var(--primary);
+            color: #fff;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background var(--transition);
+            margin-top: 8px;
+        }
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.6);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.show {
+            display: flex;
+        }
+        .modal-content {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 32px 24px;
+            box-shadow: var(--shadow);
+            max-width: 400px;
+            width: 90vw;
+            color: var(--text);
+        }
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 12px;
+        }
+        .modal-body {
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 12px 2px 12px 2px;
+            }
+            .title {
+                font-size: 1.5rem;
+            }
+        }
+        body.light {
+            --bg: #f8fafc;
+            --surface: #fff;
+            --primary: #10a37f;
+            --primary-hover: #0e8c6c;
+            --error: #ef4444;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --text: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+        }
     </style>
 </head>
 <body>
-    <div class="app">
-        <!-- Timer -->
-        <div class="timer" id="gameTimer">00:00</div>
-
-        <!-- Header -->
-        <header class="header">
-            <div class="header-left">
-                <button class="btn btn--outline btn--sm" id="helpBtn">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
-                        <circle cx="12" cy="17" r="0.5"></circle>
-                    </svg>
-                    How to Play
-                </button>
-            </div>
-            <div class="title-section">
-                <h1 class="game-title">CARDLE</h1>
-                <div class="game-mode-indicator" id="gameModeIndicator">Daily Challenge</div>
-            </div>
-            <div class="header-right">
-                <button class="btn btn--outline btn--sm" id="modeToggleBtn">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                    </svg>
-                    Random Mode
-                </button>
-                <button class="btn btn--outline btn--sm" id="statsBtn">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="18" y1="20" x2="18" y2="10"></line>
-                        <line x1="12" y1="20" x2="12" y2="4"></line>
-                        <line x1="6" y1="20" x2="6" y2="14"></line>
-                    </svg>
-                    Stats
-                </button>
-                <button class="btn btn--outline btn--sm" id="darkModeBtn" title="Toggle dark mode">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
-                        <path d="M12 2a10 10 0 0 0 0 20c5.523 0 10-4.477 10-10" stroke="currentColor" stroke-width="2" fill="none"/>
-                    </svg>
-                    Dark Mode
-                </button>
-            </div>
-        </header>
-
-        <!-- Game Subtitle -->
-        <div class="game-subtitle">
-            <p>Guess the car in 5 tries. Each guess provides feedback across 5 categories.</p>
+    <div class="container">
+        <div class="header">
+            <span class="title">Cardle</span>
+            <button class="mode-toggle" id="modeToggleBtn" title="Toggle game mode">Daily</button>
+            <span class="timer" id="gameTimer">00:00</span>
+            <button class="mode-toggle" id="themeToggleBtn" title="Toggle theme">🌙</button>
         </div>
-
-        <!-- Game Input -->
-        <div class="input-section">
-            <div class="input-container">
-                <input type="text" id="carInput" class="form-control" placeholder="Enter car make and model..." autocomplete="off">
-                <div class="autocomplete-dropdown hidden" id="autocompleteDropdown">
-                    <!-- Autocomplete items will be populated here -->
-                </div>
-            </div>
-            <div class="submit-section">
-                <button class="btn btn--primary" id="submitGuessBtn" disabled>Submit Guess</button>
-            </div>
+        <div class="subtitle">Guess the car in 5 tries. Each guess gives feedback across 5 categories.</div>
+        <div class="input-group">
+            <input type="text" id="carInput" class="input" placeholder="Enter car make and model..." autocomplete="off">
+            <div class="autocomplete hidden" id="autocompleteDropdown"></div>
+            <button class="btn" id="submitGuessBtn" disabled>Submit Guess</button>
         </div>
-
-        <!-- Game Board -->
         <div class="game-board">
             <div class="board-headers">
-                <div class="header-cell" data-help="make">Make</div>
-                <div class="header-cell" data-help="model">Model</div>
-                <div class="header-cell" data-help="body">Body</div>
-                <div class="header-cell" data-help="origin">Origin</div>
-                <div class="header-cell" data-help="power">Power</div>
+                <div class="header-cell">Make</div>
+                <div class="header-cell">Model</div>
+                <div class="header-cell">Body</div>
+                <div class="header-cell">Origin</div>
+                <div class="header-cell">Power</div>
             </div>
-            <div class="game-grid" id="gameGrid">
-                <!-- Game rows will be populated here -->
-            </div>
+            <div class="game-grid" id="gameGrid"></div>
         </div>
     </div>
 
     <!-- Modals -->
-    
-    <!-- Help Modal -->
     <div class="modal" id="helpModal">
         <div class="modal-content">
             <div class="modal-title">How to Play Cardle</div>
             <div class="modal-body">
-                <div class="help-section">
-                    <h3>Objective</h3>
-                    <p>Guess the mystery car in 5 attempts using clues from 5 categories.</p>
-                </div>
-                <div class="help-section">
-                    <h3>Categories</h3>
-                    <p><strong>Make:</strong> Car manufacturer (Toyota, BMW, Ford, etc.)</p>
-                    <p><strong>Model:</strong> Specific car model (Corolla, X5, Mustang, etc.)</p>
-                    <p><strong>Body:</strong> Vehicle type (SUV, Sedan, Hatchback, Coupe, Pickup, Wagon, Convertible)</p>
-                    <p><strong>Origin:</strong> Country codes (JPN=Japan, GER=Germany, USA=United States, etc.)</p>
-                    <p><strong>Power:</strong> Engine type (ICE=Internal Combustion, HYB=Hybrid, EV=Electric)</p>
-                </div>
-                <div class="help-section">
-                    <h3>Color Coding</h3>
-                    <p><span style="color: #22c55e; font-weight: bold;">🟢 Green:</span> Correct match</p>
-                    <p><span style="color: #f59e0b; font-weight: bold;">🟡 Yellow:</span> Partial match (for applicable categories)</p>
-                    <p><span style="color: #6b7280; font-weight: bold;">⚫ Gray:</span> No match</p>
-                </div>
+                <ul>
+                    <li>Guess the mystery car in 5 attempts using clues from 5 categories.</li>
+                    <li>Categories: Make, Model, Body, Origin, Power.</li>
+                    <li>Green = correct, Yellow = partial, Red = incorrect.</li>
+                </ul>
             </div>
             <div class="modal-actions">
-                <button class="btn btn--primary" onclick="closeModal('helpModal')">Got it!</button>
+                <button class="btn" onclick="closeModal('helpModal')">Got it!</button>
             </div>
         </div>
     </div>
-
-    <!-- Stats Modal -->
-    <div class="modal" id="statsModal">
-        <div class="modal-content">
-            <div class="modal-title">Statistics</div>
-            <div class="modal-body" id="statsContent">
-                <!-- Stats will be populated here -->
-            </div>
-            <div class="modal-actions">
-                <button class="btn btn--primary" onclick="closeModal('statsModal')">Close</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Win Modal -->
     <div class="modal" id="winModal">
         <div class="modal-content">
             <div class="modal-title">🎉 Congratulations!</div>
-            <div class="modal-body">
-                <p>You guessed the car correctly!</p>
-                <div class="time-display" id="winTime">Time: 00:00</div>
-                <div id="winMessage">
-                    <!-- Win message will be populated here -->
-                </div>
-            </div>
-            <div class="modal-actions" id="winActions">
-                <!-- Win actions will be populated here -->
+            <div class="modal-body" id="winMessage"></div>
+            <div class="modal-actions">
+                <button class="btn" onclick="closeModal('winModal')">Close</button>
             </div>
         </div>
     </div>
-
-    <!-- Loss Modal -->
     <div class="modal" id="lossModal">
         <div class="modal-content">
             <div class="modal-title">Better Luck Next Time!</div>
-            <div class="modal-body">
-                <p>You've used all your guesses.</p>
-                <div class="time-display" id="lossTime">Time: 00:00</div>
-                <div class="answer-display">
-                    <h4>The correct answer was:</h4>
-                    <div class="answer-details" id="correctAnswer">
-                        <!-- Correct answer will be populated here -->
-                    </div>
-                </div>
-                <div id="lossMessage">
-                    <!-- Loss message will be populated here -->
-                </div>
-            </div>
-            <div class="modal-actions" id="lossActions">
-                <!-- Loss actions will be populated here -->
+            <div class="modal-body" id="lossMessage"></div>
+            <div class="modal-actions">
+                <button class="btn" onclick="closeModal('lossModal')">Close</button>
             </div>
         </div>
     </div>
 
     <script>
-        // Enhanced Cardle Game Logic with Timer and Dual Game Modes
+        // Modern Cardle Game Logic
         class Cardle {
             constructor(carDatabase) {
                 this.carDatabase = carDatabase;
@@ -422,51 +337,37 @@
                 this.currentCar = null;
                 this.guesses = [];
                 this.gameOver = false;
-                this.gameOver = false;
                 this.gameWon = false;
                 this.startTime = null;
                 this.endTime = null;
-                
-                // Daily completion tracking
                 this.todayString = new Date().toISOString().split('T')[0];
                 this.dailyDone = this.checkDailyDone();
-                
-                // Initialize game
                 this.initializeGame();
                 this.setupEventListeners();
-                this.startTimer();
+                this.updateModeIndicator();
+                this.updateTimerDisplay();
             }
-
             initializeGame() {
                 this.loadGameMode();
                 this.selectCar();
                 this.renderGameBoard();
-                // Fix: use getElapsedTime instead of undefined minutes/seconds
-                const timeString = this.getElapsedTime();
-                document.getElementById('gameTimer').textContent = timeString;
-                setTimeout(() => this.updateTimerDisplay(), 1000);
+                document.getElementById('gameTimer').textContent = this.getElapsedTime();
             }
-
             getElapsedTime() {
                 if (!this.startTime) return "00:00";
-                
                 const endTime = this.endTime || Date.now();
                 const elapsed = endTime - this.startTime;
                 const minutes = Math.floor(elapsed / 60000);
                 const seconds = Math.floor((elapsed % 60000) / 1000);
-                
                 return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
             }
-
             checkDailyDone() {
                 const doneDate = localStorage.getItem('cardleDailyDone');
                 return doneDate === this.todayString;
             }
-
             setDailyDone() {
                 localStorage.setItem('cardleDailyDone', this.todayString);
             }
-
             disableDaily() {
                 this.gameOver = true;
                 const grid = document.getElementById('gameGrid');
@@ -474,57 +375,739 @@
                 document.getElementById('submitGuessBtn').disabled = true;
                 document.getElementById('carInput').disabled = true;
             }
-
             setupEventListeners() {
                 const carInput = document.getElementById('carInput');
                 const submitBtn = document.getElementById('submitGuessBtn');
                 const modeToggleBtn = document.getElementById('modeToggleBtn');
-                const helpBtn = document.getElementById('helpBtn');
-                const statsBtn = document.getElementById('statsBtn');
-                const darkModeBtn = document.getElementById('darkModeBtn');
-
-                // Input and autocomplete
+                const themeToggleBtn = document.getElementById('themeToggleBtn');
                 carInput.addEventListener('input', (e) => this.handleInput(e));
                 carInput.addEventListener('keydown', (e) => this.handleKeyDown(e));
                 submitBtn.addEventListener('click', () => this.submitGuess());
-
-                // Mode toggle
                 modeToggleBtn.addEventListener('click', () => this.toggleGameMode());
-
-                // Modal buttons
-                helpBtn.addEventListener('click', () => this.showModal('helpModal'));
-                statsBtn.addEventListener('click', () => this.showStats());
-                darkModeBtn.addEventListener('click', () => this.toggleDarkMode());
-
-                // Click outside modal to close
-                document.addEventListener('click', (e) => {
-                    if (e.target.classList.contains('modal')) {
-                        this.closeModal(e.target.id);
-                    }
-                });
+                themeToggleBtn.addEventListener('click', () => this.toggleTheme());
             }
-
             toggleGameMode() {
-                const newMode = this.currentGameMode === 'daily' ? 'random' : 'daily';
-                this.currentGameMode = newMode;
+                this.currentGameMode = this.currentGameMode === 'daily' ? 'random' : 'daily';
                 this.saveGameMode();
-                
-                // Reset game with new mode
                 this.resetGame();
             }
-
             updateModeIndicator() {
-                const indicator = document.getElementById('gameModeIndicator');
-                const toggleBtn = document.getElementById('modeToggleBtn');
-                
-                if (this.currentGameMode === 'daily') {
-                    indicator.textContent = 'Daily Challenge';
-                    toggleBtn.innerHTML = `
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                        </svg>
-                        Random Mode
+                const modeToggleBtn = document.getElementById('modeToggleBtn');
+                modeToggleBtn.textContent = this.currentGameMode === 'daily' ? 'Daily' : 'Random';
+                modeToggleBtn.classList.toggle('active', this.currentGameMode === 'random');
+            }
+            handleInput(e) {
+                const value = e.target.value.trim();
+                const submitBtn = document.getElementById('submitGuessBtn');
+                if (value.length > 0) {
+                    this.showAutocomplete(value);
+                    submitBtn.disabled = false;
+                } else {
+                    this.hideAutocomplete();
+                    submitBtn.disabled = true;
+                }
+            }
+            handleKeyDown(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    this.submitGuess();
+                } else if (e.key === 'Escape') {
+                    this.hideAutocomplete();
+                }
+            }
+            showAutocomplete(query) {
+                const dropdown = document.getElementById('autocompleteDropdown');
+                const matches = this.findMatches(query);
+                if (matches.length === 0) {
+                    this.hideAutocomplete();
+                    return;
+                }
+                dropdown.innerHTML = matches.slice(0, 10).map(car => `
+                    <div class="autocomplete-item" data-car='${JSON.stringify(car)}'>
+                        ${car.make} ${car.model}
+                    </div>
+                `).join('');
+                dropdown.classList.remove('hidden');
+                dropdown.querySelectorAll('.autocomplete-item').forEach(item => {
+                    item.addEventListener('click', () => this.selectAutocompleteCar(item));
+                });
+            }
+            hideAutocomplete() {
+                const dropdown = document.getElementById('autocompleteDropdown');
+                dropdown.classList.add('hidden');
+            }
+            selectAutocompleteCar(item) {
+                const car = JSON.parse(item.dataset.car);
+                const input = document.getElementById('carInput');
+                input.value = `${car.make} ${car.model}`;
+                this.hideAutocomplete();
+                this.submitGuess();
+            }
+            findMatches(query) {
+                const normalizedQuery = query.toLowerCase().trim();
+                return this.carDatabase.filter(car => {
+                    const fullName = `${car.make} ${car.model}`.toLowerCase();
+                    return fullName.includes(normalizedQuery) || 
+                                 car.make.toLowerCase().includes(normalizedQuery) ||
+                                 car.model.toLowerCase().includes(normalizedQuery);
+                });
+            }
+            submitGuess() {
+                if (this.gameOver) return;
+                if (this.currentGameMode === 'daily' && this.dailyDone) return;
+                const input = document.getElementById('carInput');
+                const guessText = input.value.trim();
+                if (!guessText) return;
+                const guessedCar = this.findExactMatch(guessText);
+                if (!guessedCar) {
+                    alert('Please select a valid car from the suggestions.');
+                    return;
+                }
+                this.processGuess(guessedCar);
+                input.value = '';
+                input.focus();
+                this.hideAutocomplete();
+                document.getElementById('submitGuessBtn').disabled = true;
+            }
+            findExactMatch(query) {
+                const normalizedQuery = query.toLowerCase().trim();
+                return this.carDatabase.find(car => {
+                    const fullName = `${car.make} ${car.model}`.toLowerCase();
+                    return fullName === normalizedQuery;
+                });
+            }
+            processGuess(guessedCar) {
+                const feedback = this.getFeedback(guessedCar, this.currentCar);
+                this.guesses.push({ car: guessedCar, feedback });
+                this.renderGuess(this.guesses.length - 1, guessedCar, feedback);
+                if (this.isCorrectGuess(feedback)) {
+                    this.endGame(true);
+                } else if (this.guesses.length >= this.maxAttempts) {
+                    this.endGame(false);
+                }
+            }
+            getFeedback(guess, answer) {
+                // Parent company groups for partial make match
+                const parentGroups = [
+                    ['Volkswagen', 'Skoda', 'Audi', 'SEAT', 'Porsche'],
+                    ['Toyota', 'Lexus'],
+                    ['Hyundai', 'Kia', 'Genesis'],
+                    ['BMW', 'Mini'],
+                    ['Mercedes-Benz', 'Smart'],
+                    ['Renault', 'Dacia', 'Nissan', 'Infiniti'],
+                    ['Fiat', 'Alfa Romeo', 'Lancia', 'Maserati', 'Ferrari'],
+                    ['Ford', 'Lincoln'],
+                    ['Chevrolet', 'GMC', 'Cadillac', 'Buick'],
+                    ['Jaguar', 'Land Rover'],
+                    ['Peugeot', 'Citroën'],
+                    ['Ram', 'Dodge', 'Jeep', 'Chrysler']
+                ];
+                function sameParentGroup(make1, make2) {
+                    return parentGroups.some(group => group.includes(make1) && group.includes(make2));
+                }
+                const suvBodies = ['SUV', 'Crossover'];
+                const carBodies = ['Sedan', 'Coupe', 'Convertible'];
+                const hatchWagon = ['Hatchback', 'Wagon'];
+                let bodyMatch = 'incorrect';
+                if (guess.body === answer.body) {
+                    bodyMatch = 'correct';
+                } else if (
+                    (suvBodies.includes(guess.body) && suvBodies.includes(answer.body)) ||
+                    (carBodies.includes(guess.body) && carBodies.includes(answer.body)) ||
+                    (hatchWagon.includes(guess.body) && hatchWagon.includes(answer.body))
+                ) {
+                    bodyMatch = 'partial';
+                }
+                const europe = ['GER', 'FRA', 'ITA', 'ESP', 'CZE', 'ROM', 'GBR', 'SWE'];
+                const asia = ['JPN', 'KOR', 'CHN', 'IND'];
+                const america = ['USA', 'CAN', 'MEX'];
+                let originMatch = 'incorrect';
+                if (guess.origin === answer.origin) {
+                    originMatch = 'correct';
+                } else if (
+                    (europe.includes(guess.origin) && europe.includes(answer.origin)) ||
+                    (asia.includes(guess.origin) && asia.includes(answer.origin)) ||
+                    (america.includes(guess.origin) && america.includes(answer.origin))
+                ) {
+                    originMatch = 'partial';
+                }
+                let makeMatch = 'incorrect';
+                if (guess.make === answer.make) {
+                    makeMatch = 'correct';
+                } else if (sameParentGroup(guess.make, answer.make)) {
+                    makeMatch = 'partial';
+                }
+                let powerMatch = 'incorrect';
+                if (guess.power === answer.power) {
+                    powerMatch = 'correct';
+                } else if (
+                    (['HYB', 'EV'].includes(guess.power) && ['HYB', 'EV'].includes(answer.power))
+                ) {
+                    powerMatch = 'partial';
+                }
+                return {
+                    make: makeMatch,
+                    model: guess.model === answer.model ? 'correct' : 'incorrect',
+                    body: bodyMatch,
+                    origin: originMatch,
+                    power: powerMatch
+                };
+            }
+            isCorrectGuess(feedback) {
+                return Object.values(feedback).every(result => result === 'correct');
+            }
+            renderGameBoard() {
+                const gameGrid = document.getElementById('gameGrid');
+                gameGrid.innerHTML = '';
+                for (let i = 0; i < this.maxAttempts; i++) {
+                    const row = document.createElement('div');
+                    row.className = 'guess-row';
+                    row.innerHTML = `
+                        <div class="guess-cell" data-col="make"></div>
+                        <div class="guess-cell" data-col="model"></div>
+                        <div class="guess-cell" data-col="body"></div>
+                        <div class="guess-cell" data-col="origin"></div>
+                        <div class="guess-cell" data-col="power"></div>
                     `;
+                    gameGrid.appendChild(row);
+                }
+            }
+            renderGuess(guessIndex, car, feedback) {
+                const rows = document.querySelectorAll('.guess-row');
+                const row = rows[guessIndex];
+                const cells = row.querySelectorAll('.guess-cell');
+                const values = [car.make, car.model, car.body, car.origin, car.power];
+                const feedbackKeys = ['make', 'model', 'body', 'origin', 'power'];
+                cells.forEach((cell, index) => {
+                    setTimeout(() => {
+                        cell.textContent = values[index];
+                        cell.classList.add('revealing');
+                        cell.classList.add(feedback[feedbackKeys[index]]);
+                        setTimeout(() => {
+                            cell.classList.remove('revealing');
+                        }, 600);
+                    }, index * 100);
+                });
+            }
+            endGame(won) {
+                this.gameOver = true;
+                this.gameWon = won;
+                this.endTime = Date.now();
+                if (this.currentGameMode === 'daily') {
+                    this.setDailyDone();
+                    this.dailyDone = true;
+                }
+                setTimeout(() => {
+                    if (won) {
+                        this.showWinModal();
+                    } else {
+                        this.showLossModal();
+                    }
+                }, 800);
+            }
+            showWinModal() {
+                const modal = document.getElementById('winModal');
+                const winMessage = document.getElementById('winMessage');
+                winMessage.innerHTML = `<p>You guessed the car correctly in ${this.guesses.length} ${this.guesses.length === 1 ? 'attempt' : 'attempts'}!<br>Time: ${this.getElapsedTime()}</p>`;
+                modal.classList.add('show');
+            }
+            showLossModal() {
+                const modal = document.getElementById('lossModal');
+                const lossMessage = document.getElementById('lossMessage');
+                lossMessage.innerHTML = `<p>You've used all your guesses.<br>The answer was <strong>${this.currentCar.make} ${this.currentCar.model}</strong>.<br>Time: ${this.getElapsedTime()}</p>`;
+                modal.classList.add('show');
+            }
+            resetGame() {
+                this.guesses = [];
+                this.gameOver = false;
+                this.gameWon = false;
+                this.startTime = null;
+                this.endTime = null;
+                this.selectCar();
+                this.renderGameBoard();
+                this.updateModeIndicator();
+                document.getElementById('carInput').value = '';
+                document.getElementById('submitGuessBtn').disabled = true;
+                this.updateTimerDisplay();
+            }
+            selectCar() {
+                // Daily mode: deterministic pick, random mode: random pick
+                if (this.currentGameMode === 'daily') {
+                    // Use a hash of todayString for daily pick
+                    let hash = 0;
+                    for (let i = 0; i < this.todayString.length; i++) {
+                        hash = ((hash << 5) - hash) + this.todayString.charCodeAt(i);
+                        hash |= 0;
+                    }
+                    const idx = Math.abs(hash) % this.carDatabase.length;
+                    this.currentCar = this.carDatabase[idx];
+                } else {
+                    this.currentCar = this.carDatabase[Math.floor(Math.random() * this.carDatabase.length)];
+                }
+                this.startTime = Date.now();
+                this.endTime = null;
+            }
+            loadGameMode() {
+                const saved = localStorage.getItem('cardleMode');
+                if (saved) this.currentGameMode = saved;
+            }
+            saveGameMode() {
+                localStorage.setItem('cardleMode', this.currentGameMode);
+            }
+            updateTimerDisplay() {
+                document.getElementById('gameTimer').textContent = this.getElapsedTime();
+                if (!this.gameOver) setTimeout(() => this.updateTimerDisplay(), 1000);
+            }
+            toggleTheme() {
+                document.body.classList.toggle('light');
+                document.getElementById('themeToggleBtn').textContent = document.body.classList.contains('light') ? '☀️' : '🌙';
+            }
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+        }
+
+        let game;
+        document.addEventListener('DOMContentLoaded', () => {
+            fetch('/cars.json')
+                .then(response => response.json())
+                .then(carDatabase => {
+                    game = new Cardle(carDatabase);
+                })
+                .catch(err => {
+                    alert('Failed to load car database.');
+                });
+            document.getElementById('carInput').addEventListener('focus', () => {
+                document.getElementById('autocompleteDropdown').classList.remove('hidden');
+            });
+            document.getElementById('carInput').addEventListener('blur', () => {
+                setTimeout(() => document.getElementById('autocompleteDropdown').classList.add('hidden'), 200);
+            });
+            document.getElementById('helpModal').addEventListener('click', (e) => {
+                if (e.target.classList.contains('modal')) closeModal('helpModal');
+            });
+            document.getElementById('winModal').addEventListener('click', (e) => {
+                if (e.target.classList.contains('modal')) closeModal('winModal');
+            });
+            document.getElementById('lossModal').addEventListener('click', (e) => {
+                if (e.target.classList.contains('modal')) closeModal('lossModal');
+            });
+        });
+    </script>
+</body>
+</html>
+                                    <div class="header-cell">Power</div>
+                                </div>
+                                <div class="game-grid" id="gameGrid"></div>
+                            </div>
+                        </div>
+
+                        <!-- Modals -->
+                        <div class="modal" id="helpModal">
+                            <div class="modal-content">
+                                <div class="modal-title">How to Play Cardle</div>
+                                <div class="modal-body">
+                                    <ul>
+                                        <li>Guess the mystery car in 5 attempts using clues from 5 categories.</li>
+                                        <li>Categories: Make, Model, Body, Origin, Power.</li>
+                                        <li>Green = correct, Yellow = partial, Red = incorrect.</li>
+                                    </ul>
+                                </div>
+                                <div class="modal-actions">
+                                    <button class="btn" onclick="closeModal('helpModal')">Got it!</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal" id="winModal">
+                            <div class="modal-content">
+                                <div class="modal-title">🎉 Congratulations!</div>
+                                <div class="modal-body" id="winMessage"></div>
+                                <div class="modal-actions">
+                                    <button class="btn" onclick="closeModal('winModal')">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal" id="lossModal">
+                            <div class="modal-content">
+                                <div class="modal-title">Better Luck Next Time!</div>
+                                <div class="modal-body" id="lossMessage"></div>
+                                <div class="modal-actions">
+                                    <button class="btn" onclick="closeModal('lossModal')">Close</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <script>
+                            // Modern Cardle Game Logic
+                            class Cardle {
+                                constructor(carDatabase) {
+                                    this.carDatabase = carDatabase;
+                                    this.maxAttempts = 5;
+                                    this.currentGameMode = 'daily';
+                                    this.currentCar = null;
+                                    this.guesses = [];
+                                    this.gameOver = false;
+                                    this.gameWon = false;
+                                    this.startTime = null;
+                                    this.endTime = null;
+                                    this.todayString = new Date().toISOString().split('T')[0];
+                                    this.dailyDone = this.checkDailyDone();
+                                    this.initializeGame();
+                                    this.setupEventListeners();
+                                    this.updateModeIndicator();
+                                    this.updateTimerDisplay();
+                                }
+                                initializeGame() {
+                                    this.loadGameMode();
+                                    this.selectCar();
+                                    this.renderGameBoard();
+                                    document.getElementById('gameTimer').textContent = this.getElapsedTime();
+                                }
+                                getElapsedTime() {
+                                    if (!this.startTime) return "00:00";
+                                    const endTime = this.endTime || Date.now();
+                                    const elapsed = endTime - this.startTime;
+                                    const minutes = Math.floor(elapsed / 60000);
+                                    const seconds = Math.floor((elapsed % 60000) / 1000);
+                                    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                                }
+                                checkDailyDone() {
+                                    const doneDate = localStorage.getItem('cardleDailyDone');
+                                    return doneDate === this.todayString;
+                                }
+                                setDailyDone() {
+                                    localStorage.setItem('cardleDailyDone', this.todayString);
+                                }
+                                disableDaily() {
+                                    this.gameOver = true;
+                                    const grid = document.getElementById('gameGrid');
+                                    grid.innerHTML = '<div style="text-align:center;padding:2em;font-size:1.2em;">You have completed today\'s daily!<br>Come back tomorrow for a new challenge.</div>';
+                                    document.getElementById('submitGuessBtn').disabled = true;
+                                    document.getElementById('carInput').disabled = true;
+                                }
+                                setupEventListeners() {
+                                    const carInput = document.getElementById('carInput');
+                                    const submitBtn = document.getElementById('submitGuessBtn');
+                                    const modeToggleBtn = document.getElementById('modeToggleBtn');
+                                    const themeToggleBtn = document.getElementById('themeToggleBtn');
+                                    carInput.addEventListener('input', (e) => this.handleInput(e));
+                                    carInput.addEventListener('keydown', (e) => this.handleKeyDown(e));
+                                    submitBtn.addEventListener('click', () => this.submitGuess());
+                                    modeToggleBtn.addEventListener('click', () => this.toggleGameMode());
+                                    themeToggleBtn.addEventListener('click', () => this.toggleTheme());
+                                }
+                                toggleGameMode() {
+                                    this.currentGameMode = this.currentGameMode === 'daily' ? 'random' : 'daily';
+                                    this.saveGameMode();
+                                    this.resetGame();
+                                }
+                                updateModeIndicator() {
+                                    const modeToggleBtn = document.getElementById('modeToggleBtn');
+                                    modeToggleBtn.textContent = this.currentGameMode === 'daily' ? 'Daily' : 'Random';
+                                    modeToggleBtn.classList.toggle('active', this.currentGameMode === 'random');
+                                }
+                                handleInput(e) {
+                                    const value = e.target.value.trim();
+                                    const submitBtn = document.getElementById('submitGuessBtn');
+                                    if (value.length > 0) {
+                                        this.showAutocomplete(value);
+                                        submitBtn.disabled = false;
+                                    } else {
+                                        this.hideAutocomplete();
+                                        submitBtn.disabled = true;
+                                    }
+                                }
+                                handleKeyDown(e) {
+                                    if (e.key === 'Enter') {
+                                        e.preventDefault();
+                                        this.submitGuess();
+                                    } else if (e.key === 'Escape') {
+                                        this.hideAutocomplete();
+                                    }
+                                }
+                                showAutocomplete(query) {
+                                    const dropdown = document.getElementById('autocompleteDropdown');
+                                    const matches = this.findMatches(query);
+                                    if (matches.length === 0) {
+                                        this.hideAutocomplete();
+                                        return;
+                                    }
+                                    dropdown.innerHTML = matches.slice(0, 10).map(car => `
+                                        <div class="autocomplete-item" data-car='${JSON.stringify(car)}'>
+                                            ${car.make} ${car.model}
+                                        </div>
+                                    `).join('');
+                                    dropdown.classList.remove('hidden');
+                                    dropdown.querySelectorAll('.autocomplete-item').forEach(item => {
+                                        item.addEventListener('click', () => this.selectAutocompleteCar(item));
+                                    });
+                                }
+                                hideAutocomplete() {
+                                    const dropdown = document.getElementById('autocompleteDropdown');
+                                    dropdown.classList.add('hidden');
+                                }
+                                selectAutocompleteCar(item) {
+                                    const car = JSON.parse(item.dataset.car);
+                                    const input = document.getElementById('carInput');
+                                    input.value = `${car.make} ${car.model}`;
+                                    this.hideAutocomplete();
+                                    this.submitGuess();
+                                }
+                                findMatches(query) {
+                                    const normalizedQuery = query.toLowerCase().trim();
+                                    return this.carDatabase.filter(car => {
+                                        const fullName = `${car.make} ${car.model}`.toLowerCase();
+                                        return fullName.includes(normalizedQuery) || 
+                                                     car.make.toLowerCase().includes(normalizedQuery) ||
+                                                     car.model.toLowerCase().includes(normalizedQuery);
+                                    });
+                                }
+                                submitGuess() {
+                                    if (this.gameOver) return;
+                                    if (this.currentGameMode === 'daily' && this.dailyDone) return;
+                                    const input = document.getElementById('carInput');
+                                    const guessText = input.value.trim();
+                                    if (!guessText) return;
+                                    const guessedCar = this.findExactMatch(guessText);
+                                    if (!guessedCar) {
+                                        alert('Please select a valid car from the suggestions.');
+                                        return;
+                                    }
+                                    this.processGuess(guessedCar);
+                                    input.value = '';
+                                    input.focus();
+                                    this.hideAutocomplete();
+                                    document.getElementById('submitGuessBtn').disabled = true;
+                                }
+                                findExactMatch(query) {
+                                    const normalizedQuery = query.toLowerCase().trim();
+                                    return this.carDatabase.find(car => {
+                                        const fullName = `${car.make} ${car.model}`.toLowerCase();
+                                        return fullName === normalizedQuery;
+                                    });
+                                }
+                                processGuess(guessedCar) {
+                                    const feedback = this.getFeedback(guessedCar, this.currentCar);
+                                    this.guesses.push({ car: guessedCar, feedback });
+                                    this.renderGuess(this.guesses.length - 1, guessedCar, feedback);
+                                    if (this.isCorrectGuess(feedback)) {
+                                        this.endGame(true);
+                                    } else if (this.guesses.length >= this.maxAttempts) {
+                                        this.endGame(false);
+                                    }
+                                }
+                                getFeedback(guess, answer) {
+                                    // Parent company groups for partial make match
+                                    const parentGroups = [
+                                        ['Volkswagen', 'Skoda', 'Audi', 'SEAT', 'Porsche'],
+                                        ['Toyota', 'Lexus'],
+                                        ['Hyundai', 'Kia', 'Genesis'],
+                                        ['BMW', 'Mini'],
+                                        ['Mercedes-Benz', 'Smart'],
+                                        ['Renault', 'Dacia', 'Nissan', 'Infiniti'],
+                                        ['Fiat', 'Alfa Romeo', 'Lancia', 'Maserati', 'Ferrari'],
+                                        ['Ford', 'Lincoln'],
+                                        ['Chevrolet', 'GMC', 'Cadillac', 'Buick'],
+                                        ['Jaguar', 'Land Rover'],
+                                        ['Peugeot', 'Citroën'],
+                                        ['Ram', 'Dodge', 'Jeep', 'Chrysler']
+                                    ];
+                                    function sameParentGroup(make1, make2) {
+                                        return parentGroups.some(group => group.includes(make1) && group.includes(make2));
+                                    }
+                                    const suvBodies = ['SUV', 'Crossover'];
+                                    const carBodies = ['Sedan', 'Coupe', 'Convertible'];
+                                    const hatchWagon = ['Hatchback', 'Wagon'];
+                                    let bodyMatch = 'incorrect';
+                                    if (guess.body === answer.body) {
+                                        bodyMatch = 'correct';
+                                    } else if (
+                                        (suvBodies.includes(guess.body) && suvBodies.includes(answer.body)) ||
+                                        (carBodies.includes(guess.body) && carBodies.includes(answer.body)) ||
+                                        (hatchWagon.includes(guess.body) && hatchWagon.includes(answer.body))
+                                    ) {
+                                        bodyMatch = 'partial';
+                                    }
+                                    const europe = ['GER', 'FRA', 'ITA', 'ESP', 'CZE', 'ROM', 'GBR', 'SWE'];
+                                    const asia = ['JPN', 'KOR', 'CHN', 'IND'];
+                                    const america = ['USA', 'CAN', 'MEX'];
+                                    let originMatch = 'incorrect';
+                                    if (guess.origin === answer.origin) {
+                                        originMatch = 'correct';
+                                    } else if (
+                                        (europe.includes(guess.origin) && europe.includes(answer.origin)) ||
+                                        (asia.includes(guess.origin) && asia.includes(answer.origin)) ||
+                                        (america.includes(guess.origin) && america.includes(answer.origin))
+                                    ) {
+                                        originMatch = 'partial';
+                                    }
+                                    let makeMatch = 'incorrect';
+                                    if (guess.make === answer.make) {
+                                        makeMatch = 'correct';
+                                    } else if (sameParentGroup(guess.make, answer.make)) {
+                                        makeMatch = 'partial';
+                                    }
+                                    let powerMatch = 'incorrect';
+                                    if (guess.power === answer.power) {
+                                        powerMatch = 'correct';
+                                    } else if (
+                                        (['HYB', 'EV'].includes(guess.power) && ['HYB', 'EV'].includes(answer.power))
+                                    ) {
+                                        powerMatch = 'partial';
+                                    }
+                                    return {
+                                        make: makeMatch,
+                                        model: guess.model === answer.model ? 'correct' : 'incorrect',
+                                        body: bodyMatch,
+                                        origin: originMatch,
+                                        power: powerMatch
+                                    };
+                                }
+                                isCorrectGuess(feedback) {
+                                    return Object.values(feedback).every(result => result === 'correct');
+                                }
+                                renderGameBoard() {
+                                    const gameGrid = document.getElementById('gameGrid');
+                                    gameGrid.innerHTML = '';
+                                    for (let i = 0; i < this.maxAttempts; i++) {
+                                        const row = document.createElement('div');
+                                        row.className = 'guess-row';
+                                        row.innerHTML = `
+                                            <div class="guess-cell" data-col="make"></div>
+                                            <div class="guess-cell" data-col="model"></div>
+                                            <div class="guess-cell" data-col="body"></div>
+                                            <div class="guess-cell" data-col="origin"></div>
+                                            <div class="guess-cell" data-col="power"></div>
+                                        `;
+                                        gameGrid.appendChild(row);
+                                    }
+                                }
+                                renderGuess(guessIndex, car, feedback) {
+                                    const rows = document.querySelectorAll('.guess-row');
+                                    const row = rows[guessIndex];
+                                    const cells = row.querySelectorAll('.guess-cell');
+                                    const values = [car.make, car.model, car.body, car.origin, car.power];
+                                    const feedbackKeys = ['make', 'model', 'body', 'origin', 'power'];
+                                    cells.forEach((cell, index) => {
+                                        setTimeout(() => {
+                                            cell.textContent = values[index];
+                                            cell.classList.add('revealing');
+                                            cell.classList.add(feedback[feedbackKeys[index]]);
+                                            setTimeout(() => {
+                                                cell.classList.remove('revealing');
+                                            }, 600);
+                                        }, index * 100);
+                                    });
+                                }
+                                endGame(won) {
+                                    this.gameOver = true;
+                                    this.gameWon = won;
+                                    this.endTime = Date.now();
+                                    if (this.currentGameMode === 'daily') {
+                                        this.setDailyDone();
+                                        this.dailyDone = true;
+                                    }
+                                    setTimeout(() => {
+                                        if (won) {
+                                            this.showWinModal();
+                                        } else {
+                                            this.showLossModal();
+                                        }
+                                    }, 800);
+                                }
+                                showWinModal() {
+                                    const modal = document.getElementById('winModal');
+                                    const winMessage = document.getElementById('winMessage');
+                                    winMessage.innerHTML = `<p>You guessed the car correctly in ${this.guesses.length} ${this.guesses.length === 1 ? 'attempt' : 'attempts'}!<br>Time: ${this.getElapsedTime()}</p>`;
+                                    modal.classList.add('show');
+                                }
+                                showLossModal() {
+                                    const modal = document.getElementById('lossModal');
+                                    const lossMessage = document.getElementById('lossMessage');
+                                    lossMessage.innerHTML = `<p>You've used all your guesses.<br>The answer was <strong>${this.currentCar.make} ${this.currentCar.model}</strong>.<br>Time: ${this.getElapsedTime()}</p>`;
+                                    modal.classList.add('show');
+                                }
+                                resetGame() {
+                                    this.guesses = [];
+                                    this.gameOver = false;
+                                    this.gameWon = false;
+                                    this.startTime = null;
+                                    this.endTime = null;
+                                    this.selectCar();
+                                    this.renderGameBoard();
+                                    this.updateModeIndicator();
+                                    document.getElementById('carInput').value = '';
+                                    document.getElementById('submitGuessBtn').disabled = true;
+                                    this.updateTimerDisplay();
+                                }
+                                selectCar() {
+                                    // Daily mode: deterministic pick, random mode: random pick
+                                    if (this.currentGameMode === 'daily') {
+                                        // Use a hash of todayString for daily pick
+                                        let hash = 0;
+                                        for (let i = 0; i < this.todayString.length; i++) {
+                                            hash = ((hash << 5) - hash) + this.todayString.charCodeAt(i);
+                                            hash |= 0;
+                                        }
+                                        const idx = Math.abs(hash) % this.carDatabase.length;
+                                        this.currentCar = this.carDatabase[idx];
+                                    } else {
+                                        this.currentCar = this.carDatabase[Math.floor(Math.random() * this.carDatabase.length)];
+                                    }
+                                    this.startTime = Date.now();
+                                    this.endTime = null;
+                                }
+                                loadGameMode() {
+                                    const saved = localStorage.getItem('cardleMode');
+                                    if (saved) this.currentGameMode = saved;
+                                }
+                                saveGameMode() {
+                                    localStorage.setItem('cardleMode', this.currentGameMode);
+                                }
+                                updateTimerDisplay() {
+                                    document.getElementById('gameTimer').textContent = this.getElapsedTime();
+                                    if (!this.gameOver) setTimeout(() => this.updateTimerDisplay(), 1000);
+                                }
+                                toggleTheme() {
+                                    document.body.classList.toggle('light');
+                                    document.getElementById('themeToggleBtn').textContent = document.body.classList.contains('light') ? '☀️' : '🌙';
+                                }
+                            }
+
+                            function closeModal(modalId) {
+                                document.getElementById(modalId).classList.remove('show');
+                            }
+
+
+                            document.addEventListener('DOMContentLoaded', () => {
+                                fetch('/cars.json')
+                                    .then(response => response.json())
+                                    .then(carDatabase => {
+                                        game = new Cardle(carDatabase);
+                                    })
+                                    .catch(err => {
+                                        alert('Failed to load car database.');
+                                    });
+                                document.getElementById('carInput').addEventListener('focus', () => {
+                                    document.getElementById('autocompleteDropdown').classList.remove('hidden');
+                                });
+                                document.getElementById('carInput').addEventListener('blur', () => {
+                                    setTimeout(() => document.getElementById('autocompleteDropdown').classList.add('hidden'), 200);
+                                });
+                                document.getElementById('helpModal').addEventListener('click', (e) => {
+                                    if (e.target.classList.contains('modal')) closeModal('helpModal');
+                                });
+                                document.getElementById('winModal').addEventListener('click', (e) => {
+                                    if (e.target.classList.contains('modal')) closeModal('winModal');
+                                });
+                                document.getElementById('lossModal').addEventListener('click', (e) => {
+                                    if (e.target.classList.contains('modal')) closeModal('lossModal');
+                                });
+                            });
+                        </script>
+                    </body>
+                    </html>
                 } else {
                     indicator.textContent = 'Random Mode';
                     toggleBtn.innerHTML = `
