@@ -1002,7 +1002,7 @@
         // Initialize game when page loads
         let game;
         document.addEventListener('DOMContentLoaded', () => {
-            fetch('cars.json')
+            fetch('docs/cars.json')
                 .then(response => response.json())
                 .then(carDatabase => {
                     game = new Cardle(carDatabase);
