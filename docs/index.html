@@ -1009,7 +1009,22 @@
             })
             .then(carDatabase => {
                 console.log('Loaded car database:', carDatabase); // Debug log
-                game = new Cardle(carDatabase);
+                if (!Array.isArray(carDatabase)) {
+                    console.error('Car database is not an array:', carDatabase);
+                    alert('Car database format error.');
+                    return;
+                }
+                if (carDatabase.length === 0) {
+                    console.warn('Car database is empty.');
+                    alert('Car database is empty.');
+                    return;
+                }
+                try {
+                    game = new Cardle(carDatabase);
+                } catch (e) {
+                    console.error('Error initializing Cardle:', e);
+                    alert('Error initializing game. See console for details.');
+                }
             })
             .catch(err => {
                 console.error('Error loading car database:', err);
