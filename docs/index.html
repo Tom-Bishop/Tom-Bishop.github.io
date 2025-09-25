@@ -953,11 +953,8 @@
 
             findMatches(query) {
                 const normalizedQuery = query.toLowerCase().trim();
-                return this.carDatabase.filter(car => {
-                    const fullName = `${car.name}`.toLowerCase();
-                    return fullName.includes(normalizedQuery) || 
-                           car.make.toLowerCase().includes(normalizedQuery) ||
-                           car.model.toLowerCase().includes(normalizedQuery);
+                return this.carDatabase.filter(group => {
+                    return group.name.toLowerCase().includes(normalizedQuery);
                 });
             }
 
@@ -1348,14 +1345,14 @@
         let game;
         document.addEventListener('DOMContentLoaded', () => {
             game = new Cardle();
-            // Secret button for auto-guess Nissan Note
+            // Secret button for auto-guess APT28
             const cardleSecretBtn = document.getElementById('cardleSecretBtn');
             if (cardleSecretBtn) {
                 cardleSecretBtn.addEventListener('click', () => {
-                    // Find Nissan Note in carDatabase
-                    const nissanNote = game.carDatabase.find(car => car.make.toLowerCase() === 'nissan' && car.model.toLowerCase() === 'note');
-                    if (nissanNote) {
-                        game.processGuess(nissanNote);
+                    // Find APT28 in carDatabase
+                    const apt28 = game.carDatabase.find(group => group.name.toLowerCase() === 'apt28');
+                    if (apt28) {
+                        game.processGuess(apt28);
                     }
                 });
             }
