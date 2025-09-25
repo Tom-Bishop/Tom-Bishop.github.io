@@ -441,10 +441,9 @@
                 this.loadGameMode();
                 this.selectCar();
                 this.renderGameBoard();
-                // Removed erroneous nested constructor
-                const timeString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                // Fix: use getElapsedTime instead of undefined minutes/seconds
+                const timeString = this.getElapsedTime();
                 document.getElementById('gameTimer').textContent = timeString;
-                
                 setTimeout(() => this.updateTimerDisplay(), 1000);
             }
 
