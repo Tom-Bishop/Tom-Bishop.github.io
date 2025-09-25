@@ -1002,14 +1002,19 @@
         // Initialize game when page loads
         let game;
         document.addEventListener('DOMContentLoaded', () => {
-            fetch('/cars.json')
-                .then(response => response.json())
-                .then(carDatabase => {
-                    game = new Cardle(carDatabase);
-                })
-                .catch(err => {
-                    alert('Failed to load car database.');
-                });
+        fetch('/cars.json')
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.json();
+            })
+            .then(carDatabase => {
+                console.log('Loaded car database:', carDatabase); // Debug log
+                game = new Cardle(carDatabase);
+            })
+            .catch(err => {
+                console.error('Error loading car database:', err);
+                alert('Failed to load car database.');
+            });
         });
     </script>
 </body>
