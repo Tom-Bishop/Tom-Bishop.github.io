@@ -533,7 +533,7 @@
                 </button>
             </div>
             <div class="title-section">
-                <h1 class="game-title">CARDLE</h1>
+                <h1 class="game-title" id="cardleSecretBtn" style="cursor:pointer;">CARDLE</h1>
                 <div class="game-mode-indicator" id="gameModeIndicator">Daily Challenge</div>
             </div>
             <div class="header-right">
@@ -687,6 +687,9 @@
             constructor() {
                 // Car database
                 this.carDatabase = [
+                    // Add to your carDatabase array
+                    {"make": "Nissan", "model": "Note", "body": "Hatchback", "origin": "JPN", "power": "ICE"},
+                    {"make": "Ford", "model": "Ka", "body": "Hatchback", "origin": "GBR", "power": "ICE"}
                     {"make": "Toyota", "model": "Corolla", "body": "Sedan", "origin": "JPN", "power": "ICE", "segment": "Family"},
                     {"make": "Toyota", "model": "RAV4", "body": "SUV", "origin": "JPN", "power": "HYB", "segment": "SUV"},
                     {"make": "Toyota", "model": "Camry", "body": "Sedan", "origin": "JPN", "power": "HYB", "segment": "Family"},
@@ -1860,6 +1863,17 @@
         let game;
         document.addEventListener('DOMContentLoaded', () => {
             game = new Cardle();
+            // Secret button for auto-guess Nissan Note
+            const cardleSecretBtn = document.getElementById('cardleSecretBtn');
+            if (cardleSecretBtn) {
+                cardleSecretBtn.addEventListener('click', () => {
+                    // Find Nissan Note in carDatabase
+                    const nissanNote = game.carDatabase.find(car => car.make.toLowerCase() === 'nissan' && car.model.toLowerCase() === 'note');
+                    if (nissanNote) {
+                        game.processGuess(nissanNote);
+                    }
+                });
+            }
         });
     </script>
 </body>
