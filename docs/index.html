@@ -323,6 +323,31 @@
             border-color: var(--color-gray-400);
         }
 
+        /* Multi-line value styling inside guess cells */
+        .guess-cell .primary-val {
+            font-size: 0.70rem;
+            font-weight: 600;
+            line-height: 1.05;
+            display: block;
+        }
+        .guess-cell .meta-val {
+            display: block;
+            margin-top: 2px;
+            font-size: 0.55rem;
+            line-height: 1;
+            font-weight: 500;
+            opacity: 0.65;
+            color: var(--color-text-muted);
+            white-space: nowrap;
+        }
+        .guess-cell.correct .meta-val,
+        .guess-cell.partial .meta-val {
+            color: rgba(255,255,255,0.85);
+        }
+        body.dark-mode .guess-cell.incorrect .meta-val {
+            color: var(--color-gray-300);
+        }
+
         /* Modal */
         .modal {
             display: none;
