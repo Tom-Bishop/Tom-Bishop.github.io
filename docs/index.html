@@ -1510,11 +1510,70 @@
                 const cells = row.querySelectorAll('.guess-cell');
                 const values = [car.make, car.model, car.body, car.origin, car.power, car.segment];
                 const feedbackKeys = ['make', 'model', 'body', 'origin', 'power', 'segment'];
+                // Helper: region mapping for origins
+                const regionMap = {
+                    'GER':'Europe','FRA':'Europe','ITA':'Europe','ESP':'Europe','CZE':'Europe','ROM':'Europe','GBR':'Europe','SWE':'Europe',
+                    'JPN':'Asia','KOR':'Asia','CHN':'Asia','IND':'Asia',
+                    'USA':'North America','CAN':'North America','MEX':'North America'
+                };
+                // Helper: parent company mapping (normalized)
+                const parentMap = {
+                    'volkswagen':'Volkswagen Group','audi':'Volkswagen Group','seat':'Volkswagen Group','skoda':'Volkswagen Group','porsche':'Volkswagen Group',
+                    'vauxhall':'Stellantis','peugeot':'Stellantis','citroën':'Stellantis','citroen':'Stellantis','fiat':'Stellantis','alfa romeo':'Stellantis','jeep':'Stellantis','ds':'Stellantis','abarth':'Stellantis',
+                    'renault':'Renault–Nissan–Mitsubishi','dacia':'Renault–Nissan–Mitsubishi','nissan':'Renault–Nissan–Mitsubishi','mitsubishi':'Renault–Nissan–Mitsubishi',
+                    'toyota':'Toyota Group','lexus':'Toyota Group',
+                    'hyundai':'Hyundai Motor Group','kia':'Hyundai Motor Group',
+                    'bmw':'BMW Group','mini':'BMW Group','mini ':'BMW Group','mini cooper':'BMW Group',
+                    'mercedes-benz':'Mercedes-Benz Group','mercedes':'Mercedes-Benz Group','smart':'Mercedes-Benz Group',
+                    'jaguar':'JLR','land rover':'JLR','range rover':'JLR',
+                    'honda':'Honda','ford':'Ford','mazda':'Mazda','suzuki':'Suzuki','volvo':'Volvo','mg':'MG','tesla':'Tesla','subaru':'Subaru','aston martin':'Aston Martin Lagonda','mclaren':'McLaren','abarth':'Stellantis'
+                };
+                // Helper: segment grouping explanation
+                const segmentExplainer = {
+                    'SUV':'Sport Utility / Crossover',
+                    'Utility':'Practical / Work-Oriented',
+                    'Family':'General Family Segment',
+                    'City':'Urban Compact',
+                    'Sports':'Performance Focused',
+                    'Eco':'Low Emissions / Efficient'
+                };
                 cells.forEach((cell, index) => {
                     setTimeout(() => {
-                        cell.textContent = values[index];
+                        const val = values[index];
+                        const key = feedbackKeys[index];
                         cell.classList.add('revealing');
-                        cell.classList.add(feedback[feedbackKeys[index]]);
+                        const state = feedback[key];
+                        cell.classList.add(state);
+                        // Base display line
+                        let primaryLine = `<div class="primary-val">${val}</div>`;
+                        let metaLine = '';
+                        if (state === 'correct' || state === 'partial') {
+                            if (key === 'origin') {
+                                const region = regionMap[val];
+                                if (region) metaLine = `<div class="meta-val">${region}</div>`;
+                            } else if (key === 'make') {
+                                const parent = parentMap[val.toLowerCase()];
+                                if (parent) metaLine = `<div class="meta-val">${parent}</div>`;
+                            } else if (key === 'segment') {
+                                const expl = segmentExplainer[val];
+                                if (expl) metaLine = `<div class="meta-val">${expl}</div>`;
+                            } else if (key === 'power') {
+                                const powerMap = { 'ICE':'Combustion', 'HYB':'Hybrid System', 'EV':'Electric Drive' };
+                                if (powerMap[val]) metaLine = `<div class="meta-val">${powerMap[val]}</div>`;
+                            } else if (key === 'body') {
+                                // Group similar body types for clarity
+                                const bodyFamilies = [
+                                    { names:['SUV','Crossover','Utility','Pickup'], label:'Utility/SUV Class'},
+                                    { names:['Hatchback','Wagon','Estate'], label:'Compact / Practical'},
+                                    { names:['Sedan','Saloon'], label:'Saloon / Sedan'},
+                                    { names:['Coupe','Convertible'], label:'Sport / Leisure'}
+                                ];
+                                for (const fam of bodyFamilies) {
+                                    if (fam.names.includes(val)) { metaLine = `<div class=\"meta-val\">${fam.label}</div>`; break; }
+                                }
+                            }
+                        }
+                        cell.innerHTML = primaryLine + metaLine;
                         setTimeout(() => {
                             cell.classList.remove('revealing');
                         }, 600);
