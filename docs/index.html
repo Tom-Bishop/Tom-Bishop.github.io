@@ -293,6 +293,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-direction: column; /* Stack primary and meta values vertically */
             font-size: 0.75rem;
             font-weight: 600;
             color: var(--color-text);
@@ -510,6 +511,7 @@
             .guess-cell {
                 font-size: 0.625rem;
                 min-height: 50px;
+                flex-direction: column; /* Ensure vertical stacking on small screens */
             }
 
             .modal-content {
