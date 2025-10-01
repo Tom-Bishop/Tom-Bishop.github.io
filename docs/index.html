@@ -18,420 +18,12 @@
             --color-brown-600: rgba(94, 82, 64, 1);
             --color-charcoal-700: rgba(31, 33, 33, 1);
             --color-charcoal-800: rgba(38, 40, 40, 1);
-            --color-slate-900: rgba(19, 52, 59, 1);
-            --color-teal-300: rgba(50, 184, 198, 1);
-            --color-teal-400: rgba(45, 166, 178, 1);
-            --color-teal-500: rgba(33, 128, 141, 1);
-            --color-teal-600: rgba(29, 116, 128, 1);
-            --color-teal-700: rgba(26, 104, 115, 1);
-            --color-teal-800: rgba(41, 150, 161, 1);
-            --color-red-400: rgba(255, 84, 89, 1);
-            --color-red-500: rgba(192, 21, 47, 1);
-            --color-orange-400: rgba(230, 129, 97, 1);
-            --color-orange-500: rgba(168, 75, 47, 1);
-            --color-green-500: rgba(34, 197, 94, 1);
-            --color-yellow-500: rgba(245, 158, 11, 1);
-
-            /* Semantic Color Tokens */
-            --color-background: var(--color-cream-50);
-            --color-surface: var(--color-cream-100);
-            --color-text: var(--color-slate-900);
-            --color-text-muted: var(--color-slate-500);
-            --color-border: var(--color-gray-300);
-            --color-primary: var(--color-teal-500);
-            --color-success: var(--color-green-500);
-            --color-warning: var(--color-yellow-500);
-            --color-error: var(--color-red-500);
-        }
-        body.dark-mode {
-            --color-background: var(--color-charcoal-800);
-            --color-surface: var(--color-charcoal-700);
-            --color-text: var(--color-cream-50);
-            --color-text-muted: var(--color-gray-300);
-            --color-border: var(--color-gray-400);
-            --color-primary: var(--color-teal-300);
-            --color-success: var(--color-green-500);
-            --color-warning: var(--color-yellow-500);
-            --color-error: var(--color-red-400);
-        }
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Open Sans', 'Helvetica Neue', sans-serif;
-            background-color: var(--color-background);
-            color: var(--color-text);
-            line-height: 1.6;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .app {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 20px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Header */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .title-section {
-            text-align: center;
-        }
-
-        .game-title {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: var(--color-text);
-            letter-spacing: -0.02em;
-            margin: 0;
-        }
-
-        .game-mode-indicator {
-            font-size: 0.875rem;
-            color: var(--color-text-muted);
-            font-weight: 500;
-            margin-top: 4px;
-        }
-
-        .header-left,
-        .header-right {
-            display: flex;
-            gap: 8px;
-        }
-
-        /* Timer */
-        .timer {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background-color: var(--color-surface);
-            padding: 8px 12px;
-            border-radius: 6px;
-            border: 1px solid var(--color-border);
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: var(--color-text-muted);
-            z-index: 1000;
-        }
-
-        /* Buttons */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 12px;
-            border: none;
-            border-radius: 6px;
-            font-size: 0.875rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .btn--outline {
-            background-color: transparent;
-            border: 1px solid var(--color-border);
-            color: var(--color-text);
-        }
-
-        .btn--outline:hover {
-            background-color: var(--color-gray-200);
-            border-color: var(--color-gray-400);
-        }
-
-        .btn--primary {
-            background-color: var(--color-primary);
-            color: var(--color-white);
-        }
-
-        .btn--primary:hover {
-            background-color: var(--color-teal-600);
-        }
-
-        .btn--primary:disabled {
-            background-color: var(--color-gray-300);
-            cursor: not-allowed;
-        }
-
-        .btn--sm {
-            padding: 6px 10px;
-            font-size: 0.8125rem;
-        }
-
-        /* Game subtitle */
-        .game-subtitle {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .game-subtitle p {
-            font-size: 1rem;
-            color: var(--color-text-muted);
-        }
-
-        /* Input section */
-        .input-section {
-            margin-bottom: 30px;
-        }
-
-        .input-container {
-            position: relative;
-            max-width: 400px;
-            margin: 0 auto;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 12px 16px;
-            border: 2px solid var(--color-border);
-            border-radius: 8px;
-            font-size: 1rem;
-            background-color: var(--color-surface);
-            color: var(--color-text);
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: var(--color-primary);
-        }
-
-        .autocomplete-dropdown {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background-color: var(--color-surface);
-            border: 2px solid var(--color-border);
-            border-top: none;
-            border-radius: 0 0 8px 8px;
-            max-height: 200px;
-            overflow-y: auto;
-            z-index: 1000;
         }
 
         .autocomplete-item {
             padding: 12px 16px;
             cursor: pointer;
             border-bottom: 1px solid var(--color-border);
-        }
-
-        .autocomplete-item:hover,
-        .autocomplete-item.highlighted {
-            background-color: var(--color-gray-200);
-        }
-
-        .autocomplete-item:last-child {
-            border-bottom: none;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .submit-section {
-            text-align: center;
-            margin-top: 15px;
-        }
-
-        /* Game board */
-        .game-board {
-            margin-bottom: 30px;
-        }
-
-        .board-headers {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 8px;
-            margin-bottom: 12px;
-            padding: 0 4px;
-        }
-
-        .header-cell {
-            text-align: center;
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: var(--color-text-muted);
-            padding: 8px 4px;
-            cursor: pointer;
-            border-radius: 4px;
-            transition: background-color 0.2s ease;
-        }
-
-        .header-cell:hover {
-            background-color: var(--color-gray-200);
-        }
-
-        .game-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .guess-row {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 8px;
-        }
-
-        .guess-cell {
-            aspect-ratio: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column; /* Stack primary and meta values vertically */
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: var(--color-text);
-            border: 2px solid var(--color-border);
-            border-radius: 6px;
-            text-align: center;
-            padding: 4px;
-            min-height: 60px;
-            background-color: var(--color-surface);
-            transition: all 0.3s ease;
-        }
-
-        .guess-cell.correct {
-            background-color: var(--color-success);
-            color: var(--color-white);
-            border-color: var(--color-success);
-        }
-
-        .guess-cell.partial {
-            background-color: var(--color-warning);
-            color: var(--color-white);
-            border-color: var(--color-warning);
-        }
-
-        .guess-cell.incorrect {
-            background-color: var(--color-gray-400);
-            color: var(--color-white);
-            border-color: var(--color-gray-400);
-        }
-
-        /* Multi-line value styling inside guess cells */
-        .guess-cell .primary-val {
-            font-size: 0.70rem;
-            font-weight: 600;
-            line-height: 1.05;
-            display: block;
-        }
-        .guess-cell .meta-val {
-            display: block;
-            margin-top: 2px;
-            font-size: 0.55rem;
-            line-height: 1;
-            font-weight: 500;
-            opacity: 0.65;
-            color: var(--color-text-muted);
-            white-space: nowrap;
-        }
-        .guess-cell.correct .meta-val,
-        .guess-cell.partial .meta-val {
-            color: rgba(255,255,255,0.85);
-        }
-        body.dark-mode .guess-cell.incorrect .meta-val {
-            color: var(--color-gray-300);
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 2000;
-        }
-
-        .modal.show {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-content {
-            background-color: var(--color-surface);
-            padding: 30px;
-            border-radius: 12px;
-            max-width: 500px;
-            width: 90%;
-            text-align: center;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-        }
-
-        .modal-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 15px;
-            color: var(--color-text);
-        }
-
-        .modal-body {
-            margin-bottom: 25px;
-            color: var(--color-text-muted);
-            line-height: 1.6;
-        }
-
-        .modal-actions {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .time-display {
-            font-size: 1.125rem;
-            font-weight: 600;
-            color: var(--color-primary);
-            margin: 10px 0;
-        }
-
-        .answer-display {
-              background-color: var(--color-surface);
-              padding: 15px;
-              border-radius: 8px;
-              margin: 15px 0;
-        }
-
-        .answer-display h4 {
-            margin-bottom: 8px;
-            color: var(--color-text);
-        }
-
-        .answer-details {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 8px;
-            font-size: 0.875rem;
-        }
-
-        .answer-item {
-            text-align: center;
-        }
-
-        .answer-label {
-            font-weight: 600;
-            color: var(--color-text-muted);
-            font-size: 0.75rem;
-            margin-bottom: 4px;
         }
 
         .answer-value {
@@ -536,210 +128,204 @@
                 transform: scaleY(1);
             }
         }
-
-        .guess-cell.revealing {
-            animation: cellReveal 0.6s ease-in-out;
-        }
-    </style>
-</head>
-<body>
-    <div class="app">
-        <!-- Timer -->
-        <div class="timer" id="gameTimer">00:00</div>
-
-        <!-- Header -->
-        <header class="header">
-            <div class="header-left">
-                <button class="btn btn--outline btn--sm" id="helpBtn">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
-                        <circle cx="12" cy="17" r="0.5"></circle>
-                    </svg>
-                    How to Play
-                </button>
-            </div>
-            <div class="title-section">
-                <h1 class="game-title" id="cardleSecretBtn" style="cursor:pointer;">CARDLE</h1>
-                <div class="game-mode-indicator" id="gameModeIndicator">Daily Challenge</div>
-            </div>
-            <div class="header-right">
-                <button class="btn btn--outline btn--sm" id="modeToggleBtn">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                    </svg>
-                    Random Mode
-                </button>
-                <button class="btn btn--outline btn--sm" id="statsBtn">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="18" y1="20" x2="18" y2="10"></line>
-                        <line x1="12" y1="20" x2="12" y2="4"></line>
-                        <line x1="6" y1="20" x2="6" y2="14"></line>
-                    </svg>
-                    Stats
-                </button>
-                <button class="btn btn--outline btn--sm" id="darkModeBtn" title="Toggle dark mode">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
-                        <path d="M12 2a10 10 0 0 0 0 20c5.523 0 10-4.477 10-10" stroke="currentColor" stroke-width="2" fill="none"/>
-                    </svg>
-                    Dark Mode
-                </button>
-            </div>
-        </header>
-
-        <!-- Game Subtitle -->
-        <div class="game-subtitle">
-            <p>Guess the car in 5 tries. Each guess provides feedback across 6 categories.</p>
-        </div>
-
-        <!-- Game Input -->
-        <div class="input-section">
-            <div class="input-container">
-                <input type="text" id="carInput" class="form-control" placeholder="Enter car make and model..." autocomplete="off">
-                <div class="autocomplete-dropdown hidden" id="autocompleteDropdown">
-                    <!-- Autocomplete items will be populated here -->
-                </div>
-            </div>
-            <div class="submit-section">
-                <button class="btn btn--primary" id="submitGuessBtn" disabled>Submit Guess</button>
-            </div>
-        </div>
-
-        <!-- Game Board -->
-        <div class="game-board">
-            <div class="board-headers">
-                <div class="header-cell" data-help="make">Make</div>
-                <div class="header-cell" data-help="model">Model</div>
-                <div class="header-cell" data-help="body">Body</div>
-                <div class="header-cell" data-help="origin">Origin</div>
-                <div class="header-cell" data-help="power">Power</div>
-                <div class="header-cell" data-help="segment">Market Segment</div>
-            </div>
-            <div class="game-grid" id="gameGrid">
-                <!-- Game rows will be populated here -->
-            </div>
-        </div>
-    </div>
-
-    <!-- Modals -->
-    
-    <!-- Help Modal -->
-    <div class="modal" id="helpModal">
-        <div class="modal-content">
-            <div class="modal-title">How to Play Cardle</div>
-            <div class="modal-body">
-                <div class="help-section">
-                    <h3>Objective</h3>
-                    <p>Guess the mystery car in 5 attempts using clues from 6 categories.</p>
-                </div>
-                <div class="help-section">
-                    <h3>Categories</h3>
-                    <p><strong>Make:</strong> Car manufacturer (Toyota, BMW, Ford, etc.)</p>
-                    <p><strong>Model:</strong> Specific car model (Corolla, X5, Mustang, etc.)</p>
-                    <p><strong>Body:</strong> Vehicle type (SUV, Sedan, Hatchback, Coupe, Pickup, Wagon, Convertible)</p>
-                    <p><strong>Origin:</strong> Country codes (JPN=Japan, GER=Germany, USA=United States, etc.)</p>
-                    <p><strong>Power:</strong> Engine type (ICE=Internal Combustion, HYB=Hybrid, EV=Electric)</p>
-                    <p><strong>Market Segment:</strong> Broad category (SUV, Family, City, Sports, Eco, Utility)</p>
-                </div>
-                <div class="help-section">
-                    <h3>Color Coding</h3>
-                    <p><span style="color: #22c55e; font-weight: bold;">🟢 Green:</span> Correct match</p>
-                    <p><span style="color: #f59e0b; font-weight: bold;">🟡 Yellow:</span> Partial match (for applicable categories)</p>
-                    <p><span style="color: #6b7280; font-weight: bold;">⚫ Gray:</span> No match</p>
-                </div>
-            </div>
-            <div class="modal-actions">
-                <button class="btn btn--primary" onclick="closeModal('helpModal')">Got it!</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Stats Modal -->
-    <div class="modal" id="statsModal">
-        <div class="modal-content">
-            <div class="modal-title">Statistics</div>
-            <div class="modal-body" id="statsContent">
-                <!-- Stats will be populated here -->
-            </div>
-            <div class="modal-actions">
-                <button class="btn btn--primary" onclick="closeModal('statsModal')">Close</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Win Modal -->
-    <div class="modal" id="winModal">
-        <div class="modal-content">
-            <div class="modal-title">🎉 Congratulations!</div>
-            <div class="modal-body">
-                <p>You guessed the car correctly!</p>
-                <div class="time-display" id="winTime">Time: 00:00</div>
-                <div id="winMessage">
-                    <!-- Win message will be populated here -->
-                </div>
-            </div>
-            <div class="modal-actions" id="winActions">
-                <!-- Win actions will be populated here -->
-            </div>
-        </div>
-    </div>
-
-    <!-- Loss Modal -->
-    <div class="modal" id="lossModal">
-        <div class="modal-content">
-            <div class="modal-title">Better Luck Next Time!</div>
-            <div class="modal-body">
-                <p>You've used all your guesses.</p>
-                <div class="time-display" id="lossTime">Time: 00:00</div>
-                <div class="answer-display">
-                    <h4>The correct answer was:</h4>
-                    <div class="answer-details" id="correctAnswer">
-                        <!-- Correct answer will be populated here -->
-                    </div>
-                </div>
-                <div id="lossMessage">
-                    <!-- Loss message will be populated here -->
-                </div>
-            </div>
-            <div class="modal-actions" id="lossActions">
-                <!-- Loss actions will be populated here -->
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // Enhanced Cardle Game Logic with Timer and Dual Game Modes
-        class Cardle {
             constructor() {
-                // Car database
+                // Car database (deduplicated & normalized). One entry per model. Segments: City, Family, SUV, MPV, Utility, Sports, Eco, Luxury.
                 this.carDatabase = [
-                    // Add to your carDatabase array
-                    {"make": "Nissan", "model": "Note", "body": "Hatchback", "origin": "JPN", "power": "ICE","segment": "🐐"},
-                    {"make": "Ford", "model": "Ka", "body": "Hatchback", "origin": "GBR", "power": "ICE", "segment": "City"},
-                    {"make": "Toyota", "model": "Corolla", "body": "Sedan", "origin": "JPN", "power": "ICE", "segment": "Family"},
-                    {"make": "Toyota", "model": "RAV4", "body": "SUV", "origin": "JPN", "power": "HYB", "segment": "SUV"},
-                    {"make": "Toyota", "model": "Camry", "body": "Sedan", "origin": "JPN", "power": "HYB", "segment": "Family"},
-                    {"make": "Toyota", "model": "Prius", "body": "Hatchback", "origin": "JPN", "power": "HYB", "segment": "Eco"},
-                    {"make": "Toyota", "model": "Highlander", "body": "SUV", "origin": "JPN", "power": "HYB", "segment": "SUV"},
-                    {"make": "Toyota", "model": "C-HR", "body": "SUV", "origin": "JPN", "power": "HYB", "segment": "SUV"},
-                    {"make": "Toyota", "model": "Yaris", "body": "Hatchback", "origin": "JPN", "power": "ICE", "segment": "City"},
-                    {"make": "Toyota", "model": "Hilux", "body": "Pickup", "origin": "JPN", "power": "ICE", "segment": "Utility"},
-                    {"make": "Ford", "model": "Fiesta", "body": "Hatchback", "origin": "GBR", "power": "ICE", "segment": "City"},
-                    {"make": "Ford", "model": "Focus", "body": "Hatchback", "origin": "GBR", "power": "ICE", "segment": "Family"},
-                    {"make": "Ford", "model": "Mondeo", "body": "Sedan", "origin": "GBR", "power": "ICE", "segment": "Family"},
-                    {"make": "Ford", "model": "Kuga", "body": "SUV", "origin": "GBR", "power": "ICE", "segment": "SUV"},
-                    {"make": "Ford", "model": "Puma", "body": "SUV", "origin": "GBR", "power": "ICE", "segment": "SUV"},
-                    {"make": "Ford", "model": "Ka", "body": "Hatchback", "origin": "GBR", "power": "ICE", "segment": "City"},
-                    {"make": "Ford", "model": "EcoSport", "body": "SUV", "origin": "GBR", "power": "ICE", "segment": "SUV"},
-                    {"make": "Ford", "model": "S-Max", "body": "MPV", "origin": "GBR", "power": "ICE", "segment": "Family"},
-                    {"make": "Ford", "model": "Galaxy", "body": "MPV", "origin": "GBR", "power": "ICE", "segment": "Family"},
-                    {"make": "Ford", "model": "Mustang", "body": "Coupe", "origin": "USA", "power": "ICE", "segment": "Sports"},
-                    {"make": "Vauxhall", "model": "Corsa", "body": "Hatchback", "origin": "GBR", "power": "ICE", "segment": "City"},
-                    {"make": "Vauxhall", "model": "Astra", "body": "Hatchback", "origin": "GBR", "power": "ICE", "segment": "Family"},
-                    {"make": "Vauxhall", "model": "Insignia", "body": "Sedan", "origin": "GBR", "power": "ICE", "segment": "Family"},
-                    {"make": "Vauxhall", "model": "Mokka", "body": "SUV", "origin": "GBR", "power": "ICE", "segment": "SUV"},
-                    {"make": "Vauxhall", "model": "Crossland", "body": "SUV", "origin": "GBR", "power": "ICE", "segment": "SUV"},
+                    {"make":"Ford","model":"Fiesta","body":"Hatchback","origin":"USA","power":"ICE","segment":"City"},
+                    {"make":"Ford","model":"Focus","body":"Hatchback","origin":"USA","power":"ICE","segment":"Family"},
+                    {"make":"Ford","model":"Mondeo","body":"Sedan","origin":"USA","power":"ICE","segment":"Family"},
+                    {"make":"Ford","model":"Kuga","body":"SUV","origin":"USA","power":"ICE","segment":"SUV"},
+                    {"make":"Ford","model":"Puma","body":"SUV","origin":"USA","power":"ICE","segment":"SUV"},
+                    {"make":"Ford","model":"Mustang","body":"Coupe","origin":"USA","power":"ICE","segment":"Sports"},
+                    {"make":"Ford","model":"Ka","body":"Hatchback","origin":"USA","power":"ICE","segment":"City"},
+                    {"make":"Ford","model":"EcoSport","body":"SUV","origin":"USA","power":"ICE","segment":"SUV"},
+                    {"make":"Ford","model":"S-Max","body":"MPV","origin":"USA","power":"ICE","segment":"MPV"},
+                    {"make":"Ford","model":"Galaxy","body":"MPV","origin":"USA","power":"ICE","segment":"MPV"},
+                    {"make":"Toyota","model":"Yaris","body":"Hatchback","origin":"JPN","power":"ICE","segment":"City"},
+                    {"make":"Toyota","model":"Aygo","body":"Hatchback","origin":"JPN","power":"ICE","segment":"City"},
+                    {"make":"Toyota","model":"Corolla","body":"Hatchback","origin":"JPN","power":"ICE","segment":"Family"},
+                    {"make":"Toyota","model":"Camry","body":"Sedan","origin":"JPN","power":"HYB","segment":"Family"},
+                    {"make":"Toyota","model":"Prius","body":"Hatchback","origin":"JPN","power":"HYB","segment":"Eco"},
+                    {"make":"Toyota","model":"RAV4","body":"SUV","origin":"JPN","power":"HYB","segment":"SUV"},
+                    {"make":"Toyota","model":"C-HR","body":"SUV","origin":"JPN","power":"HYB","segment":"SUV"},
+                    {"make":"Toyota","model":"Highlander","body":"SUV","origin":"JPN","power":"HYB","segment":"SUV"},
+                    {"make":"Toyota","model":"Hilux","body":"Pickup","origin":"JPN","power":"ICE","segment":"Utility"},
+                    {"make":"Nissan","model":"Micra","body":"Hatchback","origin":"JPN","power":"ICE","segment":"City"},
+                    {"make":"Nissan","model":"Note","body":"Hatchback","origin":"JPN","power":"ICE","segment":"City"},
+                    {"make":"Nissan","model":"Leaf","body":"Hatchback","origin":"JPN","power":"EV","segment":"Eco"},
+                    {"make":"Nissan","model":"Juke","body":"SUV","origin":"JPN","power":"ICE","segment":"SUV"},
+                    {"make":"Nissan","model":"Qashqai","body":"SUV","origin":"JPN","power":"ICE","segment":"SUV"},
+                    {"make":"Nissan","model":"X-Trail","body":"SUV","origin":"JPN","power":"ICE","segment":"SUV"},
+                    {"make":"Nissan","model":"Navara","body":"Pickup","origin":"JPN","power":"ICE","segment":"Utility"},
+                    {"make":"Vauxhall","model":"Corsa","body":"Hatchback","origin":"GBR","power":"ICE","segment":"City"},
+                    {"make":"Vauxhall","model":"Astra","body":"Hatchback","origin":"GBR","power":"ICE","segment":"Family"},
+                    {"make":"Vauxhall","model":"Insignia","body":"Sedan","origin":"GBR","power":"ICE","segment":"Family"},
+                    {"make":"Vauxhall","model":"Mokka","body":"SUV","origin":"GBR","power":"ICE","segment":"SUV"},
+                    {"make":"Vauxhall","model":"Crossland","body":"SUV","origin":"GBR","power":"ICE","segment":"SUV"},
+                    {"make":"Vauxhall","model":"Grandland","body":"SUV","origin":"GBR","power":"ICE","segment":"SUV"},
+                    {"make":"Vauxhall","model":"Zafira","body":"MPV","origin":"GBR","power":"ICE","segment":"MPV"},
+                    {"make":"Vauxhall","model":"Meriva","body":"MPV","origin":"GBR","power":"ICE","segment":"MPV"},
+                    {"make":"Volkswagen","model":"Up!","body":"Hatchback","origin":"GER","power":"ICE","segment":"City"},
+                    {"make":"Volkswagen","model":"Polo","body":"Hatchback","origin":"GER","power":"ICE","segment":"City"},
+                    {"make":"Volkswagen","model":"Golf","body":"Hatchback","origin":"GER","power":"ICE","segment":"Family"},
+                    {"make":"Volkswagen","model":"Passat","body":"Sedan","origin":"GER","power":"ICE","segment":"Family"},
+                    {"make":"Volkswagen","model":"Arteon","body":"Sedan","origin":"GER","power":"ICE","segment":"Family"},
+                    {"make":"Volkswagen","model":"Tiguan","body":"SUV","origin":"GER","power":"ICE","segment":"SUV"},
+                    {"make":"Volkswagen","model":"T-Roc","body":"SUV","origin":"GER","power":"ICE","segment":"SUV"},
+                    {"make":"Volkswagen","model":"Touareg","body":"SUV","origin":"GER","power":"ICE","segment":"SUV"},
+                    {"make":"Volkswagen","model":"ID.3","body":"Hatchback","origin":"GER","power":"EV","segment":"Eco"},
+                    {"make":"Volkswagen","model":"ID.4","body":"SUV","origin":"GER","power":"EV","segment":"Eco"},
+                    {"make":"Volkswagen","model":"ID.5","body":"SUV","origin":"GER","power":"EV","segment":"Eco"},
+                    {"make":"Audi","model":"A1","body":"Hatchback","origin":"GER","power":"ICE","segment":"City"},
+                    {"make":"Audi","model":"A3","body":"Hatchback","origin":"GER","power":"ICE","segment":"Family"},
+                    {"make":"Audi","model":"A4","body":"Sedan","origin":"GER","power":"ICE","segment":"Family"},
+                    {"make":"Audi","model":"A5","body":"Coupe","origin":"GER","power":"ICE","segment":"Sports"},
+                    {"make":"Audi","model":"A6","body":"Sedan","origin":"GER","power":"ICE","segment":"Family"},
+                    {"make":"Audi","model":"Q2","body":"SUV","origin":"GER","power":"ICE","segment":"SUV"},
+                    {"make":"Audi","model":"Q3","body":"SUV","origin":"GER","power":"ICE","segment":"SUV"},
+                    {"make":"Audi","model":"Q5","body":"SUV","origin":"GER","power":"ICE","segment":"SUV"},
+                    {"make":"Audi","model":"Q7","body":"SUV","origin":"GER","power":"ICE","segment":"SUV"},
+                    {"make":"Audi","model":"Q8","body":"SUV","origin":"GER","power":"ICE","segment":"SUV"},
+                    {"make":"Audi","model":"e-tron","body":"SUV","origin":"GER","power":"EV","segment":"Eco"},
+                    {"make":"BMW","model":"1 Series","body":"Hatchback","origin":"GER","power":"ICE","segment":"Family"},
+                    {"make":"BMW","model":"2 Series","body":"Coupe","origin":"GER","power":"ICE","segment":"Sports"},
+                    {"make":"BMW","model":"3 Series","body":"Sedan","origin":"GER","power":"ICE","segment":"Family"},
+                    {"make":"BMW","model":"4 Series","body":"Coupe","origin":"GER","power":"ICE","segment":"Sports"},
+                    {"make":"BMW","model":"5 Series","body":"Sedan","origin":"GER","power":"ICE","segment":"Family"},
+                    {"make":"BMW","model":"X1","body":"SUV","origin":"GER","power":"ICE","segment":"SUV"},
+                    {"make":"BMW","model":"X3","body":"SUV","origin":"GER","power":"ICE","segment":"SUV"},
+                    {"make":"BMW","model":"X5","body":"SUV","origin":"GER","power":"ICE","segment":"SUV"},
+                    {"make":"BMW","model":"X7","body":"SUV","origin":"GER","power":"ICE","segment":"SUV"},
+                    {"make":"BMW","model":"i3","body":"Hatchback","origin":"GER","power":"EV","segment":"Eco"},
+                    {"make":"BMW","model":"i4","body":"Sedan","origin":"GER","power":"EV","segment":"Eco"},
+                    {"make":"BMW","model":"iX","body":"SUV","origin":"GER","power":"EV","segment":"Eco"},
+                    {"make":"Mercedes-Benz","model":"A-Class","body":"Hatchback","origin":"GER","power":"ICE","segment":"Family"},
+                    {"make":"Mercedes-Benz","model":"B-Class","body":"MPV","origin":"GER","power":"ICE","segment":"MPV"},
+                    {"make":"Mercedes-Benz","model":"C-Class","body":"Sedan","origin":"GER","power":"ICE","segment":"Family"},
+                    {"make":"Mercedes-Benz","model":"E-Class","body":"Sedan","origin":"GER","power":"ICE","segment":"Family"},
+                    {"make":"Mercedes-Benz","model":"S-Class","body":"Sedan","origin":"GER","power":"ICE","segment":"Luxury"},
+                    {"make":"Mercedes-Benz","model":"GLA","body":"SUV","origin":"GER","power":"ICE","segment":"SUV"},
+                    {"make":"Mercedes-Benz","model":"GLC","body":"SUV","origin":"GER","power":"ICE","segment":"SUV"},
+                    {"make":"Mercedes-Benz","model":"GLE","body":"SUV","origin":"GER","power":"ICE","segment":"SUV"},
+                    {"make":"Mercedes-Benz","model":"G-Class","body":"SUV","origin":"GER","power":"ICE","segment":"Luxury"},
+                    {"make":"Mercedes-Benz","model":"EQC","body":"SUV","origin":"GER","power":"EV","segment":"Eco"},
+                    {"make":"Mercedes-Benz","model":"EQS","body":"Sedan","origin":"GER","power":"EV","segment":"Luxury"},
+                    {"make":"Peugeot","model":"208","body":"Hatchback","origin":"FRA","power":"ICE","segment":"City"},
+                    {"make":"Peugeot","model":"308","body":"Hatchback","origin":"FRA","power":"ICE","segment":"Family"},
+                    {"make":"Peugeot","model":"2008","body":"SUV","origin":"FRA","power":"ICE","segment":"SUV"},
+                    {"make":"Peugeot","model":"3008","body":"SUV","origin":"FRA","power":"ICE","segment":"SUV"},
+                    {"make":"Peugeot","model":"5008","body":"SUV","origin":"FRA","power":"ICE","segment":"SUV"},
+                    {"make":"Peugeot","model":"508","body":"Sedan","origin":"FRA","power":"ICE","segment":"Family"},
+                    {"make":"Renault","model":"Twingo","body":"Hatchback","origin":"FRA","power":"ICE","segment":"City"},
+                    {"make":"Renault","model":"Clio","body":"Hatchback","origin":"FRA","power":"ICE","segment":"City"},
+                    {"make":"Renault","model":"Megane","body":"Hatchback","origin":"FRA","power":"ICE","segment":"Family"},
+                    {"make":"Renault","model":"Scenic","body":"MPV","origin":"FRA","power":"ICE","segment":"MPV"},
+                    {"make":"Renault","model":"Captur","body":"SUV","origin":"FRA","power":"ICE","segment":"SUV"},
+                    {"make":"Renault","model":"Kadjar","body":"SUV","origin":"FRA","power":"ICE","segment":"SUV"},
+                    {"make":"Renault","model":"Zoe","body":"Hatchback","origin":"FRA","power":"EV","segment":"Eco"},
+                    {"make":"Hyundai","model":"i10","body":"Hatchback","origin":"KOR","power":"ICE","segment":"City"},
+                    {"make":"Hyundai","model":"i20","body":"Hatchback","origin":"KOR","power":"ICE","segment":"City"},
+                    {"make":"Hyundai","model":"i30","body":"Hatchback","origin":"KOR","power":"ICE","segment":"Family"},
+                    {"make":"Hyundai","model":"Kona","body":"SUV","origin":"KOR","power":"ICE","segment":"SUV"},
+                    {"make":"Hyundai","model":"Tucson","body":"SUV","origin":"KOR","power":"ICE","segment":"SUV"},
+                    {"make":"Hyundai","model":"Santa Fe","body":"SUV","origin":"KOR","power":"ICE","segment":"SUV"},
+                    {"make":"Hyundai","model":"Ioniq","body":"Hatchback","origin":"KOR","power":"EV","segment":"Eco"},
+                    {"make":"Kia","model":"Picanto","body":"Hatchback","origin":"KOR","power":"ICE","segment":"City"},
+                    {"make":"Kia","model":"Rio","body":"Hatchback","origin":"KOR","power":"ICE","segment":"City"},
+                    {"make":"Kia","model":"Ceed","body":"Hatchback","origin":"KOR","power":"ICE","segment":"Family"},
+                    {"make":"Kia","model":"Sportage","body":"SUV","origin":"KOR","power":"ICE","segment":"SUV"},
+                    {"make":"Kia","model":"Sorento","body":"SUV","origin":"KOR","power":"ICE","segment":"SUV"},
+                    {"make":"Kia","model":"Niro","body":"SUV","origin":"KOR","power":"EV","segment":"Eco"},
+                    {"make":"Kia","model":"EV6","body":"SUV","origin":"KOR","power":"EV","segment":"Luxury"},
+                    {"make":"MINI","model":"Hatch","body":"Hatchback","origin":"GBR","power":"ICE","segment":"City"},
+                    {"make":"MINI","model":"Clubman","body":"Wagon","origin":"GBR","power":"ICE","segment":"Family"},
+                    {"make":"MINI","model":"Countryman","body":"SUV","origin":"GBR","power":"ICE","segment":"SUV"},
+                    {"make":"Land Rover","model":"Defender","body":"SUV","origin":"GBR","power":"ICE","segment":"Utility"},
+                    {"make":"Land Rover","model":"Discovery","body":"SUV","origin":"GBR","power":"ICE","segment":"SUV"},
+                    {"make":"Land Rover","model":"Range Rover","body":"SUV","origin":"GBR","power":"ICE","segment":"Luxury"},
+                    {"make":"Jaguar","model":"XE","body":"Sedan","origin":"GBR","power":"ICE","segment":"Family"},
+                    {"make":"Jaguar","model":"XF","body":"Sedan","origin":"GBR","power":"ICE","segment":"Family"},
+                    {"make":"Jaguar","model":"F-Pace","body":"SUV","origin":"GBR","power":"ICE","segment":"SUV"},
+                    {"make":"Jaguar","model":"E-Pace","body":"SUV","origin":"GBR","power":"ICE","segment":"SUV"},
+                    {"make":"Jaguar","model":"I-Pace","body":"SUV","origin":"GBR","power":"EV","segment":"Eco"},
+                    {"make":"Skoda","model":"Fabia","body":"Hatchback","origin":"CZE","power":"ICE","segment":"City"},
+                    {"make":"Skoda","model":"Octavia","body":"Hatchback","origin":"CZE","power":"ICE","segment":"Family"},
+                    {"make":"Skoda","model":"Superb","body":"Sedan","origin":"CZE","power":"ICE","segment":"Family"},
+                    {"make":"Skoda","model":"Karoq","body":"SUV","origin":"CZE","power":"ICE","segment":"SUV"},
+                    {"make":"Skoda","model":"Kodiaq","body":"SUV","origin":"CZE","power":"ICE","segment":"SUV"},
+                    {"make":"Skoda","model":"Enyaq","body":"SUV","origin":"CZE","power":"EV","segment":"Eco"},
+                    {"make":"Seat","model":"Ibiza","body":"Hatchback","origin":"ESP","power":"ICE","segment":"City"},
+                    {"make":"Seat","model":"Leon","body":"Hatchback","origin":"ESP","power":"ICE","segment":"Family"},
+                    {"make":"Seat","model":"Ateca","body":"SUV","origin":"ESP","power":"ICE","segment":"SUV"},
+                    {"make":"Seat","model":"Arona","body":"SUV","origin":"ESP","power":"ICE","segment":"SUV"},
+                    {"make":"Seat","model":"Tarraco","body":"SUV","origin":"ESP","power":"ICE","segment":"SUV"},
+                    {"make":"Honda","model":"Jazz","body":"Hatchback","origin":"JPN","power":"ICE","segment":"City"},
+                    {"make":"Honda","model":"Civic","body":"Hatchback","origin":"JPN","power":"ICE","segment":"Family"},
+                    {"make":"Honda","model":"HR-V","body":"SUV","origin":"JPN","power":"ICE","segment":"SUV"},
+                    {"make":"Honda","model":"CR-V","body":"SUV","origin":"JPN","power":"HYB","segment":"SUV"},
+                    {"make":"Mazda","model":"2","body":"Hatchback","origin":"JPN","power":"ICE","segment":"City"},
+                    {"make":"Mazda","model":"3","body":"Hatchback","origin":"JPN","power":"ICE","segment":"Family"},
+                    {"make":"Mazda","model":"CX-3","body":"SUV","origin":"JPN","power":"ICE","segment":"SUV"},
+                    {"make":"Mazda","model":"CX-30","body":"SUV","origin":"JPN","power":"ICE","segment":"SUV"},
+                    {"make":"Mazda","model":"CX-5","body":"SUV","origin":"JPN","power":"ICE","segment":"SUV"},
+                    {"make":"Mazda","model":"MX-5","body":"Convertible","origin":"JPN","power":"ICE","segment":"Sports"},
+                    {"make":"Suzuki","model":"Swift","body":"Hatchback","origin":"JPN","power":"ICE","segment":"City"},
+                    {"make":"Suzuki","model":"Vitara","body":"SUV","origin":"JPN","power":"ICE","segment":"SUV"},
+                    {"make":"Suzuki","model":"S-Cross","body":"SUV","origin":"JPN","power":"ICE","segment":"SUV"},
+                    {"make":"Fiat","model":"500","body":"Hatchback","origin":"ITA","power":"ICE","segment":"City"},
+                    {"make":"Fiat","model":"Panda","body":"Hatchback","origin":"ITA","power":"ICE","segment":"City"},
+                    {"make":"Fiat","model":"Tipo","body":"Hatchback","origin":"ITA","power":"ICE","segment":"Family"},
+                    {"make":"Fiat","model":"500X","body":"SUV","origin":"ITA","power":"ICE","segment":"SUV"},
+                    {"make":"Fiat","model":"500e","body":"Hatchback","origin":"ITA","power":"EV","segment":"Eco"},
+                    {"make":"Citroën","model":"C1","body":"Hatchback","origin":"FRA","power":"ICE","segment":"City"},
+                    {"make":"Citroën","model":"C3","body":"Hatchback","origin":"FRA","power":"ICE","segment":"City"},
+                    {"make":"Citroën","model":"C4","body":"Hatchback","origin":"FRA","power":"ICE","segment":"Family"},
+                    {"make":"Citroën","model":"C5 Aircross","body":"SUV","origin":"FRA","power":"ICE","segment":"SUV"},
+                    {"make":"Citroën","model":"Berlingo","body":"MPV","origin":"FRA","power":"ICE","segment":"Utility"},
+                    {"make":"Dacia","model":"Sandero","body":"Hatchback","origin":"ROU","power":"ICE","segment":"City"},
+                    {"make":"Dacia","model":"Duster","body":"SUV","origin":"ROU","power":"ICE","segment":"SUV"},
+                    {"make":"Dacia","model":"Jogger","body":"MPV","origin":"ROU","power":"ICE","segment":"MPV"},
+                    {"make":"Volvo","model":"XC40","body":"SUV","origin":"SWE","power":"ICE","segment":"SUV"},
+                    {"make":"Volvo","model":"XC60","body":"SUV","origin":"SWE","power":"ICE","segment":"SUV"},
+                    {"make":"Volvo","model":"XC90","body":"SUV","origin":"SWE","power":"ICE","segment":"SUV"},
+                    {"make":"Volvo","model":"V40","body":"Hatchback","origin":"SWE","power":"ICE","segment":"Family"},
+                    {"make":"Volvo","model":"V60","body":"Wagon","origin":"SWE","power":"ICE","segment":"Family"},
+                    {"make":"Volvo","model":"V90","body":"Wagon","origin":"SWE","power":"ICE","segment":"Family"},
+                    {"make":"Tesla","model":"Model 3","body":"Sedan","origin":"USA","power":"EV","segment":"Eco"},
+                    {"make":"Tesla","model":"Model Y","body":"SUV","origin":"USA","power":"EV","segment":"Eco"},
+                    {"make":"Tesla","model":"Model S","body":"Sedan","origin":"USA","power":"EV","segment":"Eco"},
+                    {"make":"Tesla","model":"Model X","body":"SUV","origin":"USA","power":"EV","segment":"Eco"},
+                    {"make":"MG","model":"MG3","body":"Hatchback","origin":"CHN","power":"ICE","segment":"City"},
+                    {"make":"MG","model":"ZS","body":"SUV","origin":"CHN","power":"ICE","segment":"SUV"},
+                    {"make":"MG","model":"HS","body":"SUV","origin":"CHN","power":"ICE","segment":"SUV"},
+                    {"make":"MG","model":"MG5","body":"Wagon","origin":"CHN","power":"EV","segment":"Eco"},
+                    {"make":"Subaru","model":"Impreza","body":"Hatchback","origin":"JPN","power":"ICE","segment":"Family"},
+                    {"make":"Subaru","model":"Forester","body":"SUV","origin":"JPN","power":"ICE","segment":"SUV"},
+                    {"make":"Subaru","model":"Outback","body":"Wagon","origin":"JPN","power":"ICE","segment":"Utility"},
+                    {"make":"Subaru","model":"XV","body":"SUV","origin":"JPN","power":"ICE","segment":"SUV"},
+                    {"make":"Subaru","model":"BRZ","body":"Coupe","origin":"JPN","power":"ICE","segment":"Sports"},
+                    {"make":"Jeep","model":"Renegade","body":"SUV","origin":"USA","power":"ICE","segment":"SUV"},
+                    {"make":"Jeep","model":"Compass","body":"SUV","origin":"USA","power":"ICE","segment":"SUV"},
+                    {"make":"Jeep","model":"Wrangler","body":"SUV","origin":"USA","power":"ICE","segment":"Utility"},
+                    {"make":"Jeep","model":"Cherokee","body":"SUV","origin":"USA","power":"ICE","segment":"SUV"},
+                    {"make":"Porsche","model":"911","body":"Coupe","origin":"GER","power":"ICE","segment":"Sports"},
+                    {"make":"Porsche","model":"Cayenne","body":"SUV","origin":"GER","power":"ICE","segment":"Luxury"},
+                    {"make":"Porsche","model":"Macan","body":"SUV","origin":"GER","power":"ICE","segment":"Luxury"},
+                    {"make":"Porsche","model":"Panamera","body":"Sedan","origin":"GER","power":"ICE","segment":"Luxury"},
+                    {"make":"Porsche","model":"Taycan","body":"Sedan","origin":"GER","power":"EV","segment":"Luxury"},
+                    {"make":"Smart","model":"ForTwo","body":"Hatchback","origin":"GER","power":"EV","segment":"Eco"},
+                    {"make":"Smart","model":"ForFour","body":"Hatchback","origin":"GER","power":"EV","segment":"Eco"},
+                    {"make":"Alfa Romeo","model":"Giulietta","body":"Hatchback","origin":"ITA","power":"ICE","segment":"Family"},
+                    {"make":"Alfa Romeo","model":"Giulia","body":"Sedan","origin":"ITA","power":"ICE","segment":"Family"},
+                    {"make":"Alfa Romeo","model":"Stelvio","body":"SUV","origin":"ITA","power":"ICE","segment":"SUV"},
+                    {"make":"Abarth","model":"595","body":"Hatchback","origin":"ITA","power":"ICE","segment":"Sports"},
+                    {"make":"Abarth","model":"124 Spider","body":"Convertible","origin":"ITA","power":"ICE","segment":"Sports"},
+                    {"make":"Ram","model":"1500","body":"Pickup","origin":"USA","power":"ICE","segment":"Utility"},
+                    {"make":"Ram","model":"2500","body":"Pickup","origin":"USA","power":"ICE","segment":"Utility"},
+                    {"make":"Dodge","model":"Charger","body":"Sedan","origin":"USA","power":"ICE","segment":"Sports"},
+                    {"make":"Dodge","model":"Challenger","body":"Coupe","origin":"USA","power":"ICE","segment":"Sports"},
+                    {"make":"Dodge","model":"Durango","body":"SUV","origin":"USA","power":"ICE","segment":"SUV"}
+                ];
                     {"make": "Vauxhall", "model": "Grandland", "body": "SUV", "origin": "GBR", "power": "ICE", "segment": "SUV"},
                     {"make": "Vauxhall", "model": "Zafira", "body": "MPV", "origin": "GBR", "power": "ICE", "segment": "Family"},
                     {"make": "Vauxhall", "model": "Meriva", "body": "MPV", "origin": "GBR", "power": "ICE", "segment": "Family"},
@@ -994,11 +580,11 @@
                     {"make": "Vauxhall", "model": "Mokka", "body": "SUV", "origin": "GBR", "power": "ICE", "segment": "SUV"},
                     {"make": "Vauxhall", "model": "Crossland", "body": "SUV", "origin": "GBR", "power": "ICE", "segment": "SUV"},
                     {"make": "Vauxhall", "model": "Grandland", "body": "SUV", "origin": "GBR", "power": "ICE", "segment": "SUV"},
-                    {"make": "Ford", "model": "Fiesta", "body": "Hatchback", "origin": "GBR", "power": "ICE", "segment": "City"},
-                    {"make": "Ford", "model": "Focus", "body": "Hatchback", "origin": "GBR", "power": "ICE", "segment": "City"},
-                    {"make": "Ford", "model": "Mondeo", "body": "Sedan", "origin": "GBR", "power": "ICE", "segment": "Family"},
-                    {"make": "Ford", "model": "Kuga", "body": "SUV", "origin": "GBR", "power": "ICE", "segment": "SUV"},
-                    {"make": "Ford", "model": "Puma", "body": "SUV", "origin": "GBR", "power": "ICE", "segment": "SUV"},
+                    {"make": "Ford", "model": "Fiesta", "body": "Hatchback", "origin": "USA", "power": "ICE", "segment": "City"},
+                    {"make": "Ford", "model": "Focus", "body": "Hatchback", "origin": "USA", "power": "ICE", "segment": "City"},
+                    {"make": "Ford", "model": "Mondeo", "body": "Sedan", "origin": "USA", "power": "ICE", "segment": "Family"},
+                    {"make": "Ford", "model": "Kuga", "body": "SUV", "origin": "USA", "power": "ICE", "segment": "SUV"},
+                    {"make": "Ford", "model": "Puma", "body": "SUV", "origin": "USA", "power": "ICE", "segment": "SUV"},
                     {"make": "Land Rover", "model": "Discovery", "body": "SUV", "origin": "GBR", "power": "ICE", "segment": "Luxury"},
                     {"make": "Land Rover", "model": "Defender", "body": "SUV", "origin": "GBR", "power": "ICE", "segment": "Luxury"},
                     {"make": "Land Rover", "model": "Range Rover", "body": "SUV", "origin": "GBR", "power": "ICE", "segment": "Luxury"},
