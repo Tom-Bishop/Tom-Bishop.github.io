@@ -1750,53 +1750,7 @@
                         <button class="btn btn--outline" onclick="game.closeModal('lossModal')">Close</button>
                     `;
                 }
-            }
-
-            async showLeaderboard() {
-                this.ensurePlayerName();
-                const content = document.getElementById('leaderboardContent');
-                content.textContent = 'Loading...';
-                // Placeholder fetch for leaderboard JSON
-                try {
-                    const today = this.todayString;
-                    const url = 'https://example.com/api/cardle/leaderboard?date=' + encodeURIComponent(today);
-                    const res = await fetch(url, { cache:'no-store' });
-                    if (!res.ok) throw new Error('Network');
-                    const data = await res.json(); // Expect array of score objects
-                    const daily = (data || []).filter(s => s.date === today && s.mode === 'daily');
-                    if (daily.length === 0) {
-                        content.innerHTML = '<p>No scores yet today.</p>';
-                    } else {
-                        daily.sort((a,b)=>{
-                            // Wins first
-                            if (a.won !== b.won) return a.won? -1:1;
-                            // Fewer attempts
-                            if (a.attempts !== b.attempts) return a.attempts - b.attempts;
-                            // Faster time
-                            return a.timeMs - b.timeMs;
-                        });
-                        const rows = daily.map((s,i)=>{
-                            const time = (()=>{const m=Math.floor(s.timeMs/60000);const sec=Math.floor((s.timeMs%60000)/1000);return `${m.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;})();
-                            return `<tr><td>${i+1}</td><td>${s.name}</td><td>${s.won? '✅':'❌'}</td><td>${s.attempts}</td><td>${time}</td></tr>`;
-                        }).join('');
-                        content.innerHTML = `
-                            <table style="width:100%;border-collapse:collapse;font-size:0.85rem;">
-                                <thead>
-                                    <tr style="text-align:left;">
-                                        <th style="padding:4px 6px;border-bottom:1px solid var(--color-border);">#</th>
-                                        <th style="padding:4px 6px;border-bottom:1px solid var(--color-border);">Player</th>
-                                        <th style="padding:4px 6px;border-bottom:1px solid var(--color-border);">Win</th>
-                                        <th style="padding:4px 6px;border-bottom:1px solid var(--color-border);">Attempts</th>
-                                        <th style="padding:4px 6px;border-bottom:1px solid var(--color-border);">Time</th>
-                                    </tr>
-                                </thead>
-                                <tbody>${rows}</tbody>
-                            </table>`;
-                    }
-                } catch(e) {
-                    content.innerHTML = '<p style="color:var(--color-error);">Failed to load leaderboard (backend not configured).</p>';
-                }
-                this.showModal('leaderboardModal');
+                this.showModal('lossModal');
             }
 
             getStats() {
