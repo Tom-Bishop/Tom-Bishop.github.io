@@ -603,6 +603,12 @@
                     </svg>
                     Stats
                 </button>
+                <button class="btn btn--outline btn--sm" id="leaderboardBtn" title="Daily Leaderboard">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M8 21V10M16 21V3M12 21V6"/>
+                    </svg>
+                    Leaderboard
+                </button>
                 <button class="btn btn--outline btn--sm" id="darkModeBtn" title="Toggle dark mode">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
@@ -729,6 +735,32 @@
             </div>
             <div class="modal-actions" id="lossActions">
                 <!-- Loss actions will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaderboard Modal -->
+    <div class="modal" id="leaderboardModal">
+        <div class="modal-content" style="max-width:640px;">
+            <div class="modal-title">Daily Leaderboard</div>
+            <div class="modal-body" id="leaderboardContent">Loading...</div>
+            <div class="modal-actions">
+                <button class="btn btn--primary" onclick="closeModal('leaderboardModal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Player Name Modal -->
+    <div class="modal" id="nameModal">
+        <div class="modal-content" style="max-width:460px;">
+            <div class="modal-title">Welcome to Cardle</div>
+            <div class="modal-body">
+                <p style="margin-bottom:12px;">Enter a display name for leaderboards (3–16 characters). Stored locally.</p>
+                <input type="text" id="playerNameInput" class="form-control" placeholder="e.g. Tom" maxlength="16" style="text-align:center;">
+                <div id="playerNameError" style="color:var(--color-error);font-size:0.75rem;margin-top:6px;display:none;">Name must be 3–16 alphanumeric or - _</div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn--primary" id="savePlayerNameBtn" disabled>Save</button>
             </div>
         </div>
     </div>
@@ -1226,6 +1258,7 @@
                 const modeToggleBtn = document.getElementById('modeToggleBtn');
                 const helpBtn = document.getElementById('helpBtn');
                 const statsBtn = document.getElementById('statsBtn');
+                const leaderboardBtn = document.getElementById('leaderboardBtn');
                 const darkModeBtn = document.getElementById('darkModeBtn');
 
                 // Input and autocomplete
@@ -1239,6 +1272,7 @@
                 // Modal buttons
                 helpBtn.addEventListener('click', () => this.showModal('helpModal'));
                 statsBtn.addEventListener('click', () => this.showStats());
+                if (leaderboardBtn) leaderboardBtn.addEventListener('click', () => this.showLeaderboard());
                 darkModeBtn.addEventListener('click', () => this.toggleDarkMode());
 
                 // Click outside modal to close
@@ -1664,6 +1698,8 @@
                     } else {
                         this.showLossModal();
                     }
+                    // Attempt remote score submission
+                    this.submitScore();
                 }, 1000);
             }
 
@@ -1750,7 +1786,149 @@
                         <button class="btn btn--outline" onclick="game.closeModal('lossModal')">Close</button>
                     `;
                 }
+                
                 this.showModal('lossModal');
+            }
+
+            playRandomMode() {
+                this.currentGameMode = 'random';
+                this.saveGameMode();
+                this.resetGame();
+                this.closeModal('winModal');
+            }
+
+            playAnotherRandom() {
+                this.resetGame();
+                this.closeModal('winModal');
+                this.closeModal('lossModal');
+            }
+
+            resetGame() {
+                this.guesses = [];
+                this.gameOver = false;
+                this.gameWon = false;
+                this.startTime = null;
+                this.endTime = null;
+                
+                this.selectCar();
+                this.renderGameBoard();
+                this.updateModeIndicator();
+                this.startTimer();
+                
+                document.getElementById('carInput').value = '';
+                document.getElementById('submitGuessBtn').disabled = true;
+            }
+
+            saveGameStats() {
+                const stats = this.getStats();
+                const mode = this.currentGameMode;
+                if (!stats[mode]) {
+                    stats[mode] = { played: 0, won: 0, streak: 0, maxStreak: 0, totalTime: 0, avgTime: 0, totalWinAttempts: 0, totalLossAttempts: 0 };
+                }
+                // Backfill new fields if upgrading from older schema
+                if (stats[mode].totalWinAttempts == null) stats[mode].totalWinAttempts = 0;
+                if (stats[mode].totalLossAttempts == null) stats[mode].totalLossAttempts = 0;
+                stats[mode].played++;
+                // Calculate time for this game
+                const elapsed = this.endTime && this.startTime ? (this.endTime - this.startTime) : 0;
+                if (elapsed > 0) {
+                    stats[mode].totalTime = (stats[mode].totalTime || 0) + elapsed;
+                    stats[mode].avgTime = Math.round(stats[mode].totalTime / stats[mode].played);
+                }
+                const attemptsThisGame = this.guesses.length;
+                if (this.gameWon) {
+                    stats[mode].won++;
+                    stats[mode].streak++;
+                    stats[mode].maxStreak = Math.max(stats[mode].maxStreak, stats[mode].streak);
+                    stats[mode].totalWinAttempts += attemptsThisGame;
+                } else {
+                    stats[mode].streak = 0;
+                    stats[mode].totalLossAttempts += attemptsThisGame;
+                }
+                localStorage.setItem('cardleStats', JSON.stringify(stats));
+            }
+
+            getPlayerName() {
+                return localStorage.getItem('cardlePlayerName') || null;
+            }
+
+            ensurePlayerName() {
+                if (!this.getPlayerName()) {
+                    this.showModal('nameModal');
+                }
+            }
+
+            submitScore() {
+                // Guard: only submit if player has a name
+                const name = this.getPlayerName();
+                if (!name) return; // user declined naming
+                // Daily only: prevent duplicate submissions for the same day & mode
+                const key = `cardleSubmitted_${this.currentGameMode}_${this.todayString}`;
+                if (this.currentGameMode === 'daily' && localStorage.getItem(key)) return;
+                const payload = {
+                    date: this.todayString,
+                    mode: this.currentGameMode,
+                    name,
+                    attempts: this.guesses.length,
+                    won: this.gameWon,
+                    timeMs: this.endTime && this.startTime ? (this.endTime - this.startTime) : 0,
+                    timestamp: Date.now()
+                };
+                // Placeholder: Replace URL with deployed serverless endpoint
+                const endpoint = 'https://example.com/api/cardle/submit';
+                fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                }).then(r => { if (r.ok && this.currentGameMode === 'daily') localStorage.setItem(key, '1'); })
+                  .catch(()=>{/* silent fail */});
+            }
+
+            async showLeaderboard() {
+                this.ensurePlayerName();
+                const content = document.getElementById('leaderboardContent');
+                content.textContent = 'Loading...';
+                // Placeholder fetch for leaderboard JSON
+                try {
+                    const today = this.todayString;
+                    const url = 'https://example.com/api/cardle/leaderboard?date=' + encodeURIComponent(today);
+                    const res = await fetch(url, { cache:'no-store' });
+                    if (!res.ok) throw new Error('Network');
+                    const data = await res.json(); // Expect array of score objects
+                    const daily = (data || []).filter(s => s.date === today && s.mode === 'daily');
+                    if (daily.length === 0) {
+                        content.innerHTML = '<p>No scores yet today.</p>';
+                    } else {
+                        daily.sort((a,b)=>{
+                            // Wins first
+                            if (a.won !== b.won) return a.won? -1:1;
+                            // Fewer attempts
+                            if (a.attempts !== b.attempts) return a.attempts - b.attempts;
+                            // Faster time
+                            return a.timeMs - b.timeMs;
+                        });
+                        const rows = daily.map((s,i)=>{
+                            const time = (()=>{const m=Math.floor(s.timeMs/60000);const sec=Math.floor((s.timeMs%60000)/1000);return `${m.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;})();
+                            return `<tr><td>${i+1}</td><td>${s.name}</td><td>${s.won? '✅':'❌'}</td><td>${s.attempts}</td><td>${time}</td></tr>`;
+                        }).join('');
+                        content.innerHTML = `
+                            <table style="width:100%;border-collapse:collapse;font-size:0.85rem;">
+                                <thead>
+                                    <tr style="text-align:left;">
+                                        <th style="padding:4px 6px;border-bottom:1px solid var(--color-border);">#</th>
+                                        <th style="padding:4px 6px;border-bottom:1px solid var(--color-border);">Player</th>
+                                        <th style="padding:4px 6px;border-bottom:1px solid var(--color-border);">Win</th>
+                                        <th style="padding:4px 6px;border-bottom:1px solid var(--color-border);">Attempts</th>
+                                        <th style="padding:4px 6px;border-bottom:1px solid var(--color-border);">Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody>${rows}</tbody>
+                            </table>`;
+                    }
+                } catch(e) {
+                    content.innerHTML = '<p style="color:var(--color-error);">Failed to load leaderboard (backend not configured).</p>';
+                }
+                this.showModal('leaderboardModal');
             }
 
             getStats() {
@@ -1882,6 +2060,23 @@
         let game;
         document.addEventListener('DOMContentLoaded', () => {
             game = new Cardle();
+            // Player name modal interactions
+            const nameInput = document.getElementById('playerNameInput');
+            const saveNameBtn = document.getElementById('savePlayerNameBtn');
+            const nameError = document.getElementById('playerNameError');
+            function validateName(v){return /^[A-Za-z0-9_-]{3,16}$/.test(v);}            
+            if (nameInput && saveNameBtn) {
+                nameInput.addEventListener('input', ()=>{
+                    const v = nameInput.value.trim();
+                    if (validateName(v)) { saveNameBtn.disabled = false; nameError.style.display='none'; }
+                    else { saveNameBtn.disabled = true; if(v.length>0) nameError.style.display='block'; else nameError.style.display='none'; }
+                });
+                saveNameBtn.addEventListener('click', ()=>{
+                    const v = nameInput.value.trim();
+                    if(!validateName(v)) return; localStorage.setItem('cardlePlayerName', v); closeModal('nameModal');
+                });
+            }
+            game.ensurePlayerName();
             // Triple-click Easter egg: after 3 clicks on logo, change target car to Nissan Note
             const cardleSecretBtn = document.getElementById('cardleSecretBtn');
             if (cardleSecretBtn) {
