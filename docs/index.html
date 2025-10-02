@@ -540,6 +540,31 @@
         .guess-cell.revealing {
             animation: cellReveal 0.6s ease-in-out;
         }
+
+        /* Confetti for Nissan Note easter egg */
+        @keyframes confettiFall {
+            to { transform: translateY(110vh) rotate(720deg); opacity: 0.95; }
+        }
+        .confetti-piece {
+            position: fixed;
+            top: -12px;
+            width: 8px;
+            height: 14px;
+            background: var(--color-primary);
+            opacity: 0.85;
+            animation: confettiFall 3.2s linear forwards;
+            z-index: 4000;
+            pointer-events: none;
+            border-radius: 2px;
+        }
+        .goat-banner {
+            margin-top: 12px;
+            padding: 10px 14px;
+            border: 2px dashed var(--color-primary);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            background: var(--color-surface);
+        }
     </style>
 </head>
 <body>
@@ -1076,6 +1101,7 @@
                 this.gameWon = false;
                 this.startTime = null;
                 this.endTime = null;
+                this.goatCelebrated = false; // easter egg guard
                 
                 // Daily completion tracking
                 this.todayString = new Date().toISOString().split('T')[0];
@@ -1086,6 +1112,13 @@
                 this.initializeGame();
                 this.setupEventListeners();
                 this.startTimer();
+
+                // Restore dark mode preference
+                const storedDark = localStorage.getItem('cardleDarkMode');
+                if (storedDark === '1') {
+                    document.body.classList.add('dark-mode');
+                }
+                this.updateDarkModeButton(document.body.classList.contains('dark-mode'));
             }
 
             initializeGame() {
@@ -1362,9 +1395,9 @@
                 // Parent company groups for partial make match
                 const parentGroups = [
                     // Volkswagen Group
-                    ['Volkswagen', 'Audi', 'SEAT', 'Skoda', 'Porsche'],
+                    ['Volkswagen', 'Audi', 'Seat', 'Skoda', 'Porsche'],
                     // Stellantis (Vauxhall, Peugeot, Citroën, Fiat, Alfa Romeo, Jeep, DS, Abarth)
-                    ['Vauxhall', 'Peugeot', 'Citroën', 'Fiat', 'Alfa Romeo', 'Jeep', 'DS', 'Abarth'],
+                    ['Vauxhall', 'Peugeot', 'Citroën', 'Citroen', 'Fiat', 'Alfa Romeo', 'Jeep', 'DS', 'Abarth'],
                     // Renault-Nissan-Mitsubishi Alliance
                     ['Renault', 'Dacia', 'Nissan', 'Mitsubishi'],
                     // Toyota Group
@@ -1425,7 +1458,12 @@
                 ];
 
                 function sameParentGroup(make1, make2) {
-                    return parentGroups.some(group => group.includes(make1) && group.includes(make2));
+                    const m1 = (make1||'').toLowerCase();
+                    const m2 = (make2||'').toLowerCase();
+                    return parentGroups.some(group => {
+                        const lowered = group.map(g => (g||'').toLowerCase());
+                        return lowered.includes(m1) && lowered.includes(m2);
+                    });
                 }
 
                 // Body: partial if both are SUV-like, or both are hatchback/wagon, etc.
@@ -1448,7 +1486,8 @@
                 }
 
                 // Origin: partial if both are European, Asian, or American
-                const europe = ['GER', 'FRA', 'ITA', 'ESP', 'CZE', 'ROM', 'GBR', 'SWE'];
+                // Include both ROU and legacy ROM just in case
+                const europe = ['GER', 'FRA', 'ITA', 'ESP', 'CZE', 'ROU', 'ROM', 'GBR', 'SWE'];
                 const asia = ['JPN', 'KOR', 'CHN', 'IND'];
                 const america = ['USA', 'CAN', 'MEX'];
 
@@ -1486,17 +1525,18 @@
                 if (guess.segment === answer.segment) {
                     segmentMatch = 'correct';
                 } else {
-                    // Define broad segment groups for partial match
+                    // Expanded broad segment groups (includes Executive, Luxury, MPV)
                     const segmentGroups = [
-                        ['SUV', 'Utility'],
-                        ['Family', 'City'],
-                        ['Sports', 'Eco']
+                        ['SUV', 'Utility', 'MPV'],
+                        ['Family', 'City', 'Executive'],
+                        ['Sports', 'Eco', 'Luxury']
                     ];
-                    segmentGroups.forEach(group => {
+                    for (const group of segmentGroups) {
                         if (group.includes(guess.segment) && group.includes(answer.segment)) {
                             segmentMatch = 'partial';
+                            break;
                         }
-                    });
+                    }
                 }
 
                 return {
@@ -1635,18 +1675,27 @@
                 
                 winTime.textContent = `Time: ${this.getElapsedTime()}`;
                 
+                const isGoat = this.currentCar.make === 'Nissan' && this.currentCar.model === 'Note';
                 if (this.currentGameMode === 'daily') {
-                    winMessage.innerHTML = `<p>You completed today's daily challenge in ${this.guesses.length} ${this.guesses.length === 1 ? 'attempt' : 'attempts'}!</p>`;
+                    winMessage.innerHTML = `<p>${isGoat ? '🐐 <strong>GOAT ACHIEVED!</strong> ' : ''}You completed today's daily challenge in ${this.guesses.length} ${this.guesses.length === 1 ? 'attempt' : 'attempts'}!</p>`;
                     winActions.innerHTML = `
                         <button class="btn btn--primary" onclick="game.playRandomMode()">Play Random Mode</button>
                         <button class="btn btn--outline" onclick="game.closeModal('winModal')">Close</button>
                     `;
                 } else {
-                    winMessage.innerHTML = `<p>Great job! You guessed it in ${this.guesses.length} ${this.guesses.length === 1 ? 'attempt' : 'attempts'}!</p>`;
+                    winMessage.innerHTML = `<p>${isGoat ? '🐐 <strong>Legend!</strong> ' : ''}Great job! You guessed it in ${this.guesses.length} ${this.guesses.length === 1 ? 'attempt' : 'attempts'}!</p>`;
                     winActions.innerHTML = `
                         <button class="btn btn--primary" onclick="game.playAnotherRandom()">Play Another</button>
                         <button class="btn btn--outline" onclick="game.closeModal('winModal')">Close</button>
                     `;
+                }
+                if (isGoat) {
+                    // Add special banner
+                    const banner = document.createElement('div');
+                    banner.className = 'goat-banner';
+                    banner.innerHTML = 'You guessed <strong>Nissan Note</strong> – personal GOAT confirmed! 🎉';
+                    winMessage.appendChild(banner);
+                    this.triggerGoatCelebration();
                 }
                 
                 this.showModal('winModal');
@@ -1802,10 +1851,14 @@
             toggleDarkMode() {
                 const body = document.body;
                 body.classList.toggle('dark-mode');
-                
                 const isDarkMode = body.classList.contains('dark-mode');
+                localStorage.setItem('cardleDarkMode', isDarkMode ? '1' : '0');
+                this.updateDarkModeButton(isDarkMode);
+            }
+
+            updateDarkModeButton(isDarkMode) {
                 const darkModeBtn = document.getElementById('darkModeBtn');
-                
+                if (!darkModeBtn) return;
                 if (isDarkMode) {
                     darkModeBtn.innerHTML = `
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1821,6 +1874,27 @@
                         </svg>
                         Dark Mode
                     `;
+                }
+            }
+
+            triggerGoatCelebration() {
+                if (this.goatCelebrated) return;
+                this.goatCelebrated = true;
+                const colors = ['#22c55e','#2563eb','#f59e0b','#ef4444','#8b5cf6','#ec4899','#0ea5e9'];
+                const pieces = 60;
+                for (let i=0;i<pieces;i++) {
+                    const div = document.createElement('div');
+                    div.className = 'confetti-piece';
+                    const left = Math.random()*100; // vw
+                    const delay = Math.random()*0.8;
+                    const scale = 0.7 + Math.random()*0.8;
+                    const color = colors[Math.floor(Math.random()*colors.length)];
+                    div.style.left = left + 'vw';
+                    div.style.background = color;
+                    div.style.animationDelay = delay + 's';
+                    div.style.transform = `scale(${scale})`;
+                    document.body.appendChild(div);
+                    setTimeout(()=>{div.remove();}, 3600 + delay*1000);
                 }
             }
 
@@ -1845,14 +1919,30 @@
         let game;
         document.addEventListener('DOMContentLoaded', () => {
             game = new Cardle();
-            // Secret button for auto-guess Nissan Note
+            // Triple-click Easter egg: after 3 clicks on logo, change target car to Nissan Note
             const cardleSecretBtn = document.getElementById('cardleSecretBtn');
             if (cardleSecretBtn) {
+                let logoClickCount = 0;
+                let resetTimer = null;
                 cardleSecretBtn.addEventListener('click', () => {
-                    // Find Nissan Note in carDatabase
-                    const nissanNote = game.carDatabase.find(car => car.make.toLowerCase() === 'nissan' && car.model.toLowerCase() === 'note');
-                    if (nissanNote) {
-                        game.processGuess(nissanNote);
+                    logoClickCount++;
+                    // Reset counter after 2 seconds of inactivity
+                    if (resetTimer) clearTimeout(resetTimer);
+                    resetTimer = setTimeout(() => { logoClickCount = 0; }, 2000);
+                    if (logoClickCount >= 3) {
+                        logoClickCount = 0;
+                        const note = game.carDatabase.find(c => c.make.toLowerCase() === 'nissan' && c.model.toLowerCase() === 'note');
+                        if (note) {
+                            game.currentCar = note;
+                            console.log('🐐 GOAT target activated: Nissan Note');
+                            // Optional subtle visual pulse on timer to indicate activation
+                            const timerEl = document.getElementById('gameTimer');
+                            if (timerEl) {
+                                timerEl.style.transition = 'box-shadow 0.6s ease';
+                                timerEl.style.boxShadow = '0 0 0 4px rgba(245,158,11,0.5)';
+                                setTimeout(()=>{ timerEl.style.boxShadow=''; }, 800);
+                            }
+                        }
                     }
                 });
             }
