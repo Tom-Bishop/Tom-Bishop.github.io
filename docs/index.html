@@ -1,236 +1,230 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Cardle - Guess the Car</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cardle - Guess the Car!</title>
     <style>
         :root {
-            --color-white:#ffffff;
-            --color-black:#000000;
-            --color-gray-50:#f8f9fa;
-            --color-gray-100:#f1f5f9;
-            --color-gray-200:#e2e8f0;
-            --color-gray-300:#cbd5e1;
-            --color-gray-400:#94a3b8;
-            --color-gray-500:#64748b;
-            --color-gray-600:#475569;
-            --color-gray-700:#334155;
-            --color-gray-800:#1e293b;
-            --color-gray-900:#0f172a;
-            --color-primary:#2563eb;
-            --color-success:#16a34a;
-            --color-warning:#d97706;
-            --color-border:var(--color-gray-300);
-            --color-text:var(--color-gray-800);
-            --color-text-muted:var(--color-gray-500);
-            --color-surface:#ffffff;
-            --color-surface-alt:#f8fafc;
+            /* Primitive Color Tokens */
+            --color-white: rgba(255, 255, 255, 1);
+            --color-black: rgba(0, 0, 0, 1);
+            --color-cream-50: rgba(252, 252, 249, 1);
+            --color-cream-100: rgba(255, 255, 253, 1);
+            --color-gray-200: rgba(245, 245, 245, 1);
+            --color-gray-300: rgba(167, 169, 169, 1);
+            --color-gray-400: rgba(119, 124, 124, 1);
+            --color-slate-500: rgba(98, 108, 113, 1);
+            --color-brown-600: rgba(94, 82, 64, 1);
+            --color-charcoal-700: rgba(31, 33, 33, 1);
+            --color-charcoal-800: rgba(38, 40, 40, 1);
+            --color-slate-900: rgba(19, 52, 59, 1);
+            --color-teal-300: rgba(50, 184, 198, 1);
+            --color-teal-400: rgba(45, 166, 178, 1);
+            --color-teal-500: rgba(33, 128, 141, 1);
+            --color-teal-600: rgba(29, 116, 128, 1);
+            --color-teal-700: rgba(26, 104, 115, 1);
+            --color-teal-800: rgba(41, 150, 161, 1);
+            --color-red-400: rgba(255, 84, 89, 1);
+            --color-red-500: rgba(192, 21, 47, 1);
+            --color-orange-400: rgba(230, 129, 97, 1);
+            --color-orange-500: rgba(168, 75, 47, 1);
+            --color-green-500: rgba(34, 197, 94, 1);
+            --color-yellow-500: rgba(245, 158, 11, 1);
+
+            /* Semantic Color Tokens */
+            --color-background: var(--color-cream-50);
+            --color-surface: var(--color-cream-100);
+            --color-text: var(--color-slate-900);
+            --color-text-muted: var(--color-slate-500);
+            --color-border: var(--color-gray-300);
+            --color-primary: var(--color-teal-500);
+            --color-success: var(--color-green-500);
+            --color-warning: var(--color-yellow-500);
+            --color-error: var(--color-red-500);
         }
         body.dark-mode {
-            --color-surface:#1e293b;
-            --color-surface-alt:#0f172a;
-            --color-border:#334155;
-            --color-text:#f1f5f9;
-            --color-text-muted:#94a3b8;
+            --color-background: var(--color-charcoal-800);
+            --color-surface: var(--color-charcoal-700);
+            --color-text: var(--color-cream-50);
+            --color-text-muted: var(--color-gray-300);
+            --color-border: var(--color-gray-400);
+            --color-primary: var(--color-teal-300);
+            --color-success: var(--color-green-500);
+            --color-warning: var(--color-yellow-500);
+            --color-error: var(--color-red-400);
         }
-        body {margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--color-surface-alt);color:var(--color-text);}
-        .app {max-width:960px;margin:0 auto;padding:24px;}
-        header.header {display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px;}
-        .title-section {text-align:center;flex:1;}
-        .game-title {margin:0;font-size:2.5rem;letter-spacing:1px;}
-        .game-mode-indicator {font-size:.875rem;color:var(--color-text-muted);margin-top:4px;}
-        .game-subtitle {text-align:center;margin-bottom:20px;font-size:.95rem;color:var(--color-text-muted);}
-        .input-section {display:flex;flex-direction:column;gap:12px;margin-bottom:22px;}
-        .input-container {position:relative;}
-        #carInput {width:100%;padding:14px 16px;font-size:1rem;border:2px solid var(--color-border);border-radius:8px;background:var(--color-surface);color:var(--color-text);}
-        #carInput:focus {outline:none;border-color:var(--color-primary);box-shadow:0 0 0 3px rgba(37,99,235,0.25);}
-        .autocomplete-dropdown {position:absolute;top:100%;left:0;right:0;background:var(--color-surface);border:1px solid var(--color-border);border-radius:8px;margin-top:4px;max-height:260px;overflow-y:auto;z-index:1200;box-shadow:0 8px 16px rgba(0,0,0,0.12);}
-        .autocomplete-item {padding:10px 14px;cursor:pointer;font-size:.9rem;border-bottom:1px solid var(--color-border);}
-        .autocomplete-item:last-child {border-bottom:none;}
-        .autocomplete-item:hover,.autocomplete-item.highlighted {background:var(--color-gray-200);} 
-        .hidden {display:none;}
-        .submit-section {text-align:center;}
-        .btn {display:inline-flex;align-items:center;gap:6px;background:var(--color-surface);color:var(--color-text);border:2px solid var(--color-border);padding:10px 16px;border-radius:8px;font-weight:600;cursor:pointer;font-size:.85rem;transition:.2s;}
-        .btn--primary {background:var(--color-primary);color:#fff;border-color:var(--color-primary);} .btn--primary:hover {filter:brightness(1.1);} .btn--outline:hover {background:var(--color-gray-200);} .btn:disabled {opacity:.55;cursor:not-allowed;}
-        .timer {font-weight:600;font-size:1rem;}
-        .game-board {margin-bottom:34px;}
-        .board-headers {display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:10px;padding:0 4px;}
-        .header-cell {text-align:center;font-size:.75rem;font-weight:700;color:var(--color-text-muted);padding:6px 4px;letter-spacing:.5px;}
-        .game-grid {display:flex;flex-direction:column;gap:8px;}
-        .guess-row {display:grid;grid-template-columns:repeat(6,1fr);gap:8px;}
-        .guess-cell {display:flex;flex-direction:column;justify-content:center;align-items:center;padding:4px 2px;min-height:68px;background:var(--color-surface);border:2px solid var(--color-border);border-radius:8px;font-size:.72rem;font-weight:600;text-align:center;transition:.3s;position:relative;}
-        .guess-cell.correct {background:var(--color-success);color:#fff;border-color:var(--color-success);} .guess-cell.partial {background:var(--color-warning);color:#fff;border-color:var(--color-warning);} .guess-cell.incorrect {background:var(--color-gray-500);color:#fff;border-color:var(--color-gray-500);} 
-        .guess-cell .primary-val {font-size:.7rem;line-height:1.05;} .guess-cell .meta-val {font-size:.55rem;opacity:.65;margin-top:2px;white-space:nowrap;} .guess-cell.correct .meta-val,.guess-cell.partial .meta-val {color:#fff;opacity:.85;} body.dark-mode .guess-cell.incorrect .meta-val {color:var(--color-gray-300);} 
-        @keyframes cellReveal {0%{transform:scaleY(1);}50%{transform:scaleY(0);}100%{transform:scaleY(1);} } .guess-cell.revealing {animation:cellReveal .6s ease-in-out;} 
-        .modal {display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:3000;}
-        .modal.show {display:flex;align-items:center;justify-content:center;padding:20px;}
-        .modal-content {background:var(--color-surface);color:var(--color-text);padding:28px 26px;border-radius:14px;max-width:520px;width:100%;box-shadow:0 16px 40px -8px rgba(0,0,0,0.35);} 
-        .modal-title {margin:0 0 12px;font-size:1.4rem;font-weight:700;}
-        .modal-body {margin-bottom:18px;font-size:.9rem;line-height:1.5;color:var(--color-text-muted);} 
-        .modal-actions {display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
-        .answer-details {display:grid;grid-template-columns:repeat(6,1fr);gap:8px;font-size:.75rem;}
-        .answer-item {text-align:center;}
-        .answer-label {font-size:.65rem;text-transform:uppercase;font-weight:600;color:var(--color-text-muted);letter-spacing:.5px;}
-        .answer-value {font-weight:600;color:var(--color-text);} 
-        @media (max-width:680px){.board-headers,.guess-row,.answer-details {grid-template-columns:repeat(3,1fr);} .game-title{font-size:2rem;} .modal-content{padding:22px;} }
-    </style>
-</head>
-<body>
-    <div class="app">
-        <header class="header">
-            <div class="header-left">
-                <button class="btn btn--outline btn--sm" id="helpBtn">Help</button>
-            </div>
-            <div class="title-section">
-                <h1 class="game-title" id="cardleSecretBtn" style="cursor:pointer;">CARDLE</h1>
-                <div class="game-mode-indicator" id="gameModeIndicator">Daily Challenge</div>
-            </div>
-            <div class="header-right" style="display:flex;gap:8px;">
-                <button class="btn btn--outline btn--sm" id="modeToggleBtn">Random Mode</button>
-                <button class="btn btn--outline btn--sm" id="statsBtn">Stats</button>
-                <button class="btn btn--outline btn--sm" id="darkModeBtn" title="Toggle dark mode">Dark Mode</button>
-            </div>
-        </header>
-        <div class="game-subtitle">Guess the car in 5 tries. Each guess gives feedback on Make, Model, Body, Origin, Power, Segment.</div>
-        <div class="input-section">
-            <div class="input-container">
-                <input id="carInput" type="text" placeholder="Enter make and model..." autocomplete="off" />
-                <div id="autocompleteDropdown" class="autocomplete-dropdown hidden"></div>
-            </div>
-            <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:space-between;">
-                <div class="timer" id="timerDisplay">00:00</div>
-                <div class="submit-section"><button id="submitGuessBtn" class="btn btn--primary" disabled>Submit Guess</button></div>
-            </div>
-        </div>
-        <div class="game-board">
-            <div class="board-headers">
-                <div class="header-cell" data-col="make">Make</div>
-                <div class="header-cell" data-col="model">Model</div>
-                <div class="header-cell" data-col="body">Body</div>
-                <div class="header-cell" data-col="origin">Origin</div>
-                <div class="header-cell" data-col="power">Power</div>
-                <div class="header-cell" data-col="segment">Segment</div>
-            </div>
-            <div class="game-grid" id="gameGrid"></div>
-        </div>
-        <button id="cardleSecretBtn2" style="position:absolute;left:-9999px;top:-9999px;" aria-hidden="true">Secret</button>
-    </div>
-    <!-- Modals -->
-    <div class="modal" id="helpModal">
-        <div class="modal-content">
-            <div class="modal-title">How to Play</div>
-            <div class="modal-body">
-                Guess the mystery car. Green = exact, Yellow = related (same group/region/type), Gray = no relation.
-            </div>
-            <div class="modal-actions"><button class="btn btn--primary" onclick="closeModal('helpModal')">Got it</button></div>
-        </div>
-    </div>
-    <div class="modal" id="statsModal">
-        <div class="modal-content">
-            <div class="modal-title">Statistics</div>
-            <div class="modal-body" id="statsContent"></div>
-            <div class="modal-actions"><button class="btn btn--primary" onclick="closeModal('statsModal')">Close</button></div>
-        </div>
-    </div>
-    <div class="modal" id="winModal">
-        <div class="modal-content">
-            <div class="modal-title">🎉 Correct!</div>
-            <div class="modal-body">
-                <div id="winMessage"></div>
-                <div class="time-display" id="winTime">Time: 00:00</div>
-            </div>
-            <div class="modal-actions" id="winActions"></div>
-        </div>
-    </div>
-    <div class="modal" id="lossModal">
-        <div class="modal-content">
-            <div class="modal-title">Out of Tries</div>
-            <div class="modal-body">
-                <p id="lossMessage"></p>
-                <div class="time-display" id="lossTime">Time: 00:00</div>
-                <div class="answer-details" id="correctAnswer"></div>
-            </div>
-            <div class="modal-actions" id="lossActions"></div>
-        </div>
-    </div>
-    <script>
-    class Cardle {
-        constructor() {
-            this.carDatabase = [/* dataset truncated in diff for brevity; retained above */
-            ];
-            // (Dataset retained exactly as provided above in the file.)
-            // Deduplicate safeguard (kept though dataset is curated)
-            const seen = new Set();
-            this.carDatabase = this.carDatabase.filter(c=>{const k=(c.make+"|"+c.model).toLowerCase();if(seen.has(k)) return false;seen.add(k);return true;});
-            this.maxAttempts = 5;
-            this.currentGameMode = 'daily';
-            this.currentCar = null;
-            this.guesses = [];
-            this.gameOver = false;
-            this.gameWon = false;
-            this.startTime = null;
-            this.endTime = null;
-            this.todayString = new Date().toISOString().split('T')[0];
-            this.dailyDone = this.checkDailyDone();
-            this.initializeGame();
-            this.setupEventListeners();
-            this.startTimer();
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        initializeGame(){this.loadGameMode();this.selectCar();this.renderGameBoard();this.updateModeIndicator();if(this.currentGameMode==='daily'&&this.dailyDone){this.disableDaily();}}
-        loadGameMode(){const m=localStorage.getItem('cardleGameMode');if(m) this.currentGameMode=m;}
-        saveGameMode(){localStorage.setItem('cardleGameMode',this.currentGameMode);}
-        selectCar(){this.currentCar = this.currentGameMode==='daily'?this.getDailyCar():this.getRandomCar();}
-        getDailyCar(){const d=new Date().toISOString().split('T')[0];const idx=Math.abs(this.hashCode(d))%this.carDatabase.length;return this.carDatabase[idx];}
-        getRandomCar(){return this.carDatabase[Math.floor(Math.random()*this.carDatabase.length)];}
-        hashCode(str){let h=0;for(let i=0;i<str.length;i++){h=((h<<5)-h)+str.charCodeAt(i);h|=0;}return h;}
-        startTimer(){this.startTime=Date.now();this.updateTimerDisplay();}
-        updateTimerDisplay(){if(!this.startTime||this.gameOver) return;const e=Date.now()-this.startTime;const m=Math.floor(e/60000);const s=Math.floor((e%60000)/1000);const t=`${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;const el=document.getElementById('timerDisplay'); if(el) el.textContent=t;setTimeout(()=>this.updateTimerDisplay(),1000);}
-        getElapsedTime(){if(!this.startTime)return '00:00';const end=this.endTime||Date.now();const e=end-this.startTime;const m=Math.floor(e/60000);const s=Math.floor((e%60000)/1000);return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;}
-        checkDailyDone(){return localStorage.getItem('cardleDailyDone')===this.todayString;}
-        setDailyDone(){localStorage.setItem('cardleDailyDone',this.todayString);}
-        disableDaily(){this.gameOver=true;const g=document.getElementById('gameGrid');if(g) g.innerHTML='<div style="text-align:center;padding:2em;font-size:1.1em;">Daily completed – come back tomorrow!</div>';}
-        toggleGameMode(){if(this.currentGameMode==='daily'){this.currentGameMode='random';}else{this.currentGameMode='daily';}this.saveGameMode();this.resetGame();}
-        updateModeIndicator(){const ind=document.getElementById('gameModeIndicator');const btn=document.getElementById('modeToggleBtn');if(!ind||!btn) return;if(this.currentGameMode==='daily'){ind.textContent='Daily Challenge';btn.textContent='Random Mode';}else{ind.textContent='Random Mode';btn.textContent='Daily Mode';}}
-        setupEventListeners(){const input=document.getElementById('carInput');const submit=document.getElementById('submitGuessBtn');const modeBtn=document.getElementById('modeToggleBtn');const statsBtn=document.getElementById('statsBtn');const helpBtn=document.getElementById('helpBtn');const darkBtn=document.getElementById('darkModeBtn');
-            if(input){input.addEventListener('input',()=>this.handleAutocomplete());input.addEventListener('keydown',e=>{if(e.key==='Enter'){this.submitGuess();} if(e.key==='ArrowDown'){this.moveAutocomplete(1);e.preventDefault();} if(e.key==='ArrowUp'){this.moveAutocomplete(-1);e.preventDefault();}});} 
-            if(submit) submit.addEventListener('click',()=>this.submitGuess());
-            if(modeBtn) modeBtn.addEventListener('click',()=>this.toggleGameMode());
-            if(statsBtn) statsBtn.addEventListener('click',()=>this.showStats());
-            if(helpBtn) helpBtn.addEventListener('click',()=>this.showModal('helpModal'));
-            if(darkBtn) darkBtn.addEventListener('click',()=>this.toggleDarkMode());
-            document.addEventListener('click',(e)=>{const dd=document.getElementById('autocompleteDropdown');if(dd && !dd.contains(e.target) && e.target!==input){this.hideAutocomplete();}});
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: var(--color-background);
+            color: var(--color-text);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
-        handleAutocomplete(){const input=document.getElementById('carInput');const submit=document.getElementById('submitGuessBtn');if(!input)return;const val=input.value.trim();if(submit) submit.disabled=true;if(val.length<2){this.hideAutocomplete();return;}const matches=this.findMatches(val).slice(0,25);if(matches.length===0){this.hideAutocomplete();return;}this.showAutocomplete(matches);if(submit) submit.disabled=false;}
-        showAutocomplete(matches){const dd=document.getElementById('autocompleteDropdown');if(!dd)return;dd.innerHTML='';matches.forEach(car=>{const div=document.createElement('div');div.className='autocomplete-item';div.textContent=`${car.make} ${car.model}`;div.dataset.car=JSON.stringify(car);div.addEventListener('click',()=>this.selectAutocompleteCar(div));dd.appendChild(div);});dd.classList.remove('hidden');this.autocompleteIndex=-1;}
-        hideAutocomplete(){const dd=document.getElementById('autocompleteDropdown');if(dd) dd.classList.add('hidden');}
-        moveAutocomplete(delta){const dd=document.getElementById('autocompleteDropdown');if(!dd||dd.classList.contains('hidden'))return;const items=[...dd.querySelectorAll('.autocomplete-item')];if(items.length===0)return;this.autocompleteIndex=( (this.autocompleteIndex??-1)+delta+items.length )%items.length;items.forEach((el,i)=>el.classList.toggle('highlighted',i===this.autocompleteIndex));const active=items[this.autocompleteIndex];if(active) active.scrollIntoView({block:'nearest'});}
-        selectAutocompleteCar(item){const car=JSON.parse(item.dataset.car);const input=document.getElementById('carInput');if(input) input.value=`${car.make} ${car.model}`;this.hideAutocomplete();this.submitGuess();}
-        findMatches(q){const n=q.toLowerCase();return this.carDatabase.filter(c=>`${c.make} ${c.model}`.toLowerCase().includes(n));}
-        submitGuess(){if(this.gameOver) return; if(this.currentGameMode==='daily'&&this.dailyDone) return;const input=document.getElementById('carInput');if(!input) return;const txt=input.value.trim();if(!txt) return;const match=this.findExactMatch(txt);if(!match){alert('Select a valid car from suggestions.');return;}this.processGuess(match);input.value='';input.focus();this.hideAutocomplete();const submit=document.getElementById('submitGuessBtn');if(submit) submit.disabled=true;}
-        findExactMatch(q){const n=q.toLowerCase();return this.carDatabase.find(c=>`${c.make} ${c.model}`.toLowerCase()===n);} 
-        processGuess(car){const fb=this.getFeedback(car,this.currentCar);this.guesses.push({car,feedback:fb});this.renderGuess(this.guesses.length-1,car,fb);if(this.isCorrectGuess(fb)){this.endGame(true);} else if(this.guesses.length>=this.maxAttempts){this.endGame(false);} }
-        getFeedback(guess,answer){const parentGroups=[['Volkswagen','Audi','Seat','Skoda','Porsche'],['Vauxhall','Peugeot','Citroën','Fiat','Alfa Romeo','Jeep','DS','Abarth'],['Renault','Dacia','Nissan','Mitsubishi'],['Toyota','Lexus'],['Hyundai','Kia'],['BMW','MINI'],['Mercedes-Benz','Smart'],['Jaguar','Land Rover','Range Rover']];const sameParent=(a,b)=>parentGroups.some(g=>g.includes(a)&&g.includes(b));const suv=['SUV','Crossover','Utility','Pickup'];const carBodies=['Sedan','Saloon','Coupe','Convertible'];const hatch=['Hatchback','Wagon','Estate'];const mpv=['MPV','Van','Minivan'];let body='incorrect';if(guess.body===answer.body) body='correct'; else if((suv.includes(guess.body)&&suv.includes(answer.body))||(carBodies.includes(guess.body)&&carBodies.includes(answer.body))||(hatch.includes(guess.body)&&hatch.includes(answer.body))||(mpv.includes(guess.body)&&mpv.includes(answer.body))) body='partial';const europe=['GER','FRA','ITA','ESP','CZE','ROU','GBR','SWE'];const asia=['JPN','KOR','CHN','IND'];const america=['USA','CAN','MEX'];let origin='incorrect';if(guess.origin===answer.origin) origin='correct'; else if((europe.includes(guess.origin)&&europe.includes(answer.origin))||(asia.includes(guess.origin)&&asia.includes(answer.origin))||(america.includes(guess.origin)&&america.includes(answer.origin))) origin='partial';let make='incorrect';if(guess.make===answer.make) make='correct'; else if(sameParent(guess.make,answer.make)) make='partial';let power='incorrect';if(guess.power===answer.power) power='correct'; else if(['HYB','EV'].includes(guess.power)&&['HYB','EV'].includes(answer.power)) power='partial';let segment='incorrect';if(guess.segment===answer.segment) segment='correct'; else {[['SUV','Utility'],['Family','City'],['Sports','Eco']].forEach(g=>{if(g.includes(guess.segment)&&g.includes(answer.segment)) segment='partial';});}
-            return {make,model:guess.model===answer.model?'correct':'incorrect',body,origin,power,segment};}
-        isCorrectGuess(fb){return Object.values(fb).every(v=>v==='correct');}
-        renderGameBoard(){const g=document.getElementById('gameGrid');if(!g)return;g.innerHTML='';for(let i=0;i<this.maxAttempts;i++){const row=document.createElement('div');row.className='guess-row';row.innerHTML=`<div class="guess-cell" data-col="make"></div><div class="guess-cell" data-col="model"></div><div class="guess-cell" data-col="body"></div><div class="guess-cell" data-col="origin"></div><div class="guess-cell" data-col="power"></div><div class="guess-cell" data-col="segment"></div>`;g.appendChild(row);} }
-        renderGuess(idx,car,fb){const g=document.getElementById('gameGrid');if(!g) return;const row=g.children[idx];if(!row)return;const mapping=[['make',car.make],['model',car.model],['body',car.body],['origin',car.origin],['power',car.power],['segment',car.segment]];mapping.forEach(([col,val],i)=>{const cell=row.children[i];cell.classList.add(fb[col]);cell.innerHTML=`<span class="primary-val">${val}</span><span class="meta-val">${col}</span>`;});}
-        endGame(won){this.gameOver=true;this.gameWon=won;this.endTime=Date.now();if(won){this.showWinModal();if(this.currentGameMode==='daily') this.setDailyDone();}else{this.showLossModal();}this.saveGameStats();}
-        showWinModal(){const m=document.getElementById('winModal');const msg=document.getElementById('winMessage');const time=document.getElementById('winTime');if(msg) msg.textContent=`${this.currentCar.make} ${this.currentCar.model}`;if(time) time.textContent=`Time: ${this.getElapsedTime()}`;const actions=document.getElementById('winActions');if(actions){actions.innerHTML='';if(this.currentGameMode==='random'){const btn=document.createElement('button');btn.className='btn btn--primary';btn.textContent='Play Again';btn.onclick=()=>{this.resetGame();this.closeModal('winModal');};actions.appendChild(btn);} }this.showModal('winModal');}
-        showLossModal(){const m=document.getElementById('lossModal');const ans=document.getElementById('correctAnswer');if(ans){ans.innerHTML='';['make','model','body','origin','power','segment'].forEach(k=>{const v=document.createElement('div');v.className='answer-item';v.innerHTML=`<div class="answer-label">${k}</div><div class="answer-value">${this.currentCar[k]}</div>`;ans.appendChild(v);});}const time=document.getElementById('lossTime');if(time) time.textContent=`Time: ${this.getElapsedTime()}`;const actions=document.getElementById('lossActions');if(actions){actions.innerHTML='';if(this.currentGameMode==='random'){const btn=document.createElement('button');btn.className='btn btn--primary';btn.textContent='Try Again';btn.onclick=()=>{this.resetGame();this.closeModal('lossModal');};actions.appendChild(btn);} }this.showModal('lossModal');}
-        resetGame(){this.gameOver=false;this.gameWon=false;this.guesses=[];this.startTime=Date.now();this.endTime=null;this.selectCar();this.renderGameBoard();this.updateModeIndicator();if(this.currentGameMode==='daily'&&this.dailyDone){this.disableDaily();}}
-        saveGameStats(){const stats=this.getStats();const mode=this.currentGameMode;if(!stats[mode]) stats[mode]={played:0,won:0,streak:0,maxStreak:0,totalTime:0,avgTime:0};stats[mode].played++;const elapsed=this.endTime&&this.startTime?(this.endTime-this.startTime):0;if(this.gameWon){stats[mode].won++;stats[mode].streak++;stats[mode].maxStreak=Math.max(stats[mode].maxStreak,stats[mode].streak);} else {stats[mode].streak=0;} if(elapsed>0){stats[mode].totalTime+=elapsed;stats[mode].avgTime=Math.round(stats[mode].totalTime/stats[mode].played);}localStorage.setItem('cardleStats',JSON.stringify(stats));}
-        getStats(){try{return JSON.parse(localStorage.getItem('cardleStats'))||{};}catch{return {};} }
-        showStats(){const stats=this.getStats();const d=stats.daily||{played:0,won:0,streak:0,maxStreak:0,avgTime:0};const r=stats.random||{played:0,won:0,streak:0,maxStreak:0,avgTime:0};const dailyWR=d.played?Math.round(d.won/d.played*100):0;const randomWR=r.played?Math.round(r.won/r.played*100):0;const fmt=t=>{if(!t||t<=0)return'00:00';const m=Math.floor(t/60000),s=Math.floor((t%60000)/1000);return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`};const el=document.getElementById('statsContent');if(el){el.innerHTML=`<h4>Daily</h4><div>Played: ${d.played}</div><div>Won: ${d.won}</div><div>Win Rate: ${dailyWR}%</div><div>Streak: ${d.streak}</div><div>Max Streak: ${d.maxStreak}</div><div>Avg Time: ${fmt(d.avgTime)}</div><hr><h4>Random</h4><div>Played: ${r.played}</div><div>Won: ${r.won}</div><div>Win Rate: ${randomWR}%</div><div>Streak: ${r.streak}</div><div>Max Streak: ${r.maxStreak}</div><div>Avg Time: ${fmt(r.avgTime)}</div>`;} this.showModal('statsModal');}
-        toggleDarkMode(){document.body.classList.toggle('dark-mode');const b=document.getElementById('darkModeBtn');if(b) b.textContent=document.body.classList.contains('dark-mode')?'Light Mode':'Dark Mode';}
-        showModal(id){const m=document.getElementById(id);if(m) m.classList.add('show');}
-        closeModal(id){const m=document.getElementById(id);if(m) m.classList.remove('show');}
-    }
-    function closeModal(id){const m=document.getElementById(id);if(m) m.classList.remove('show');}
-    document.addEventListener('DOMContentLoaded',()=>{const game=new Cardle(); const secret=document.getElementById('cardleSecretBtn'); if(secret){secret.addEventListener('click',()=>{const note=game.carDatabase.find(c=>c.make==='Nissan'&&c.model==='Note'); if(note) game.processGuess(note);});}});
-    </script>
-</body>
-</html>
+
+        .app {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .title-section {
+            text-align: center;
+        }
+
+        .game-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--color-text);
+            letter-spacing: -0.02em;
+            margin: 0;
+        }
+
+        .game-mode-indicator {
+            font-size: 0.875rem;
+            color: var(--color-text-muted);
+            font-weight: 500;
+            margin-top: 4px;
+        }
+
+        .header-left,
+        .header-right {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* Timer */
+        .timer {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: var(--color-surface);
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid var(--color-border);
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--color-text-muted);
+            z-index: 1000;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn--outline {
+            background-color: transparent;
+            border: 1px solid var(--color-border);
+            color: var(--color-text);
+        }
+
+        .btn--outline:hover {
+            background-color: var(--color-gray-200);
+            border-color: var(--color-gray-400);
+        }
+
+        .btn--primary {
+            background-color: var(--color-primary);
+            color: var(--color-white);
+        }
+
+        .btn--primary:hover {
+            background-color: var(--color-teal-600);
+        }
+
+        .btn--primary:disabled {
+            background-color: var(--color-gray-300);
+            cursor: not-allowed;
+        }
+
+        .btn--sm {
+            padding: 6px 10px;
+            font-size: 0.8125rem;
+        }
+
+        /* Game subtitle */
+        .game-subtitle {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .game-subtitle p {
+            font-size: 1rem;
+            color: var(--color-text-muted);
+        }
+
+        /* Input section */
+        .input-section {
+            margin-bottom: 30px;
+        }
+
+        .input-container {
+            position: relative;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--color-border);
+            border-radius: 8px;
+            font-size: 1rem;
+            background-color: var(--color-surface);
+            color: var(--color-text);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+
+        .autocomplete-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: var(--color-surface);
+            border: 2px solid var(--color-border);
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .autocomplete-item {
             padding: 12px 16px;
             cursor: pointer;
             border-bottom: 1px solid var(--color-border);
@@ -1160,8 +1154,7 @@
                 const seconds = Math.floor((elapsed % 60000) / 1000);
                 
                 const timeString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-                const timerEl = document.getElementById('timerDisplay');
-                if (timerEl) timerEl.textContent = timeString;
+                document.getElementById('gameTimer').textContent = timeString;
                 
                 setTimeout(() => this.updateTimerDisplay(), 1000);
             }
