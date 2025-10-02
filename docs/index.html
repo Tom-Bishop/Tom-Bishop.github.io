@@ -1750,60 +1750,53 @@
                         <button class="btn btn--outline" onclick="game.closeModal('lossModal')">Close</button>
                     `;
                 }
-                
-                this.showModal('lossModal');
             }
 
-            playRandomMode() {
-                this.currentGameMode = 'random';
-                this.saveGameMode();
-                this.resetGame();
-                this.closeModal('winModal');
-            }
-
-            playAnotherRandom() {
-                this.resetGame();
-                this.closeModal('winModal');
-                this.closeModal('lossModal');
-            }
-
-            resetGame() {
-                this.guesses = [];
-                this.gameOver = false;
-                this.gameWon = false;
-                this.startTime = null;
-                this.endTime = null;
-                
-                this.selectCar();
-                this.renderGameBoard();
-                this.updateModeIndicator();
-                this.startTimer();
-                
-                document.getElementById('carInput').value = '';
-                document.getElementById('submitGuessBtn').disabled = true;
-            }
-
-            saveGameStats() {
-                const stats = this.getStats();
-                const mode = this.currentGameMode;
-                if (!stats[mode]) {
-                    stats[mode] = { played: 0, won: 0, streak: 0, maxStreak: 0, totalTime: 0, avgTime: 0 };
+            async showLeaderboard() {
+                this.ensurePlayerName();
+                const content = document.getElementById('leaderboardContent');
+                content.textContent = 'Loading...';
+                // Placeholder fetch for leaderboard JSON
+                try {
+                    const today = this.todayString;
+                    const url = 'https://example.com/api/cardle/leaderboard?date=' + encodeURIComponent(today);
+                    const res = await fetch(url, { cache:'no-store' });
+                    if (!res.ok) throw new Error('Network');
+                    const data = await res.json(); // Expect array of score objects
+                    const daily = (data || []).filter(s => s.date === today && s.mode === 'daily');
+                    if (daily.length === 0) {
+                        content.innerHTML = '<p>No scores yet today.</p>';
+                    } else {
+                        daily.sort((a,b)=>{
+                            // Wins first
+                            if (a.won !== b.won) return a.won? -1:1;
+                            // Fewer attempts
+                            if (a.attempts !== b.attempts) return a.attempts - b.attempts;
+                            // Faster time
+                            return a.timeMs - b.timeMs;
+                        });
+                        const rows = daily.map((s,i)=>{
+                            const time = (()=>{const m=Math.floor(s.timeMs/60000);const sec=Math.floor((s.timeMs%60000)/1000);return `${m.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;})();
+                            return `<tr><td>${i+1}</td><td>${s.name}</td><td>${s.won? '✅':'❌'}</td><td>${s.attempts}</td><td>${time}</td></tr>`;
+                        }).join('');
+                        content.innerHTML = `
+                            <table style="width:100%;border-collapse:collapse;font-size:0.85rem;">
+                                <thead>
+                                    <tr style="text-align:left;">
+                                        <th style="padding:4px 6px;border-bottom:1px solid var(--color-border);">#</th>
+                                        <th style="padding:4px 6px;border-bottom:1px solid var(--color-border);">Player</th>
+                                        <th style="padding:4px 6px;border-bottom:1px solid var(--color-border);">Win</th>
+                                        <th style="padding:4px 6px;border-bottom:1px solid var(--color-border);">Attempts</th>
+                                        <th style="padding:4px 6px;border-bottom:1px solid var(--color-border);">Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody>${rows}</tbody>
+                            </table>`;
+                    }
+                } catch(e) {
+                    content.innerHTML = '<p style="color:var(--color-error);">Failed to load leaderboard (backend not configured).</p>';
                 }
-                stats[mode].played++;
-                // Calculate time for this game
-                const elapsed = this.endTime && this.startTime ? (this.endTime - this.startTime) : 0;
-                if (elapsed > 0) {
-                    stats[mode].totalTime = (stats[mode].totalTime || 0) + elapsed;
-                    stats[mode].avgTime = Math.round(stats[mode].totalTime / stats[mode].played);
-                }
-                if (this.gameWon) {
-                    stats[mode].won++;
-                    stats[mode].streak++;
-                    stats[mode].maxStreak = Math.max(stats[mode].maxStreak, stats[mode].streak);
-                } else {
-                    stats[mode].streak = 0;
-                }
-                localStorage.setItem('cardleStats', JSON.stringify(stats));
+                this.showModal('leaderboardModal');
             }
 
             getStats() {
@@ -1815,11 +1808,23 @@
                 const stats = this.getStats();
                 const statsContent = document.getElementById('statsContent');
                 
-                const dailyStats = stats.daily || { played: 0, won: 0, streak: 0, maxStreak: 0, avgTime: 0 };
-                const randomStats = stats.random || { played: 0, won: 0, streak: 0, maxStreak: 0, avgTime: 0 };
+                const dailyStats = stats.daily || { played: 0, won: 0, streak: 0, maxStreak: 0, avgTime: 0, totalWinAttempts: 0, totalLossAttempts: 0 };
+                const randomStats = stats.random || { played: 0, won: 0, streak: 0, maxStreak: 0, avgTime: 0, totalWinAttempts: 0, totalLossAttempts: 0 };
+                // Backfill if missing
+                if (dailyStats.totalWinAttempts == null) dailyStats.totalWinAttempts = 0;
+                if (dailyStats.totalLossAttempts == null) dailyStats.totalLossAttempts = 0;
+                if (randomStats.totalWinAttempts == null) randomStats.totalWinAttempts = 0;
+                if (randomStats.totalLossAttempts == null) randomStats.totalLossAttempts = 0;
                 
                 const dailyWinRate = dailyStats.played > 0 ? Math.round((dailyStats.won / dailyStats.played) * 100) : 0;
                 const randomWinRate = randomStats.played > 0 ? Math.round((randomStats.won / randomStats.played) * 100) : 0;
+                const dailyLosses = dailyStats.played - dailyStats.won;
+                const randomLosses = randomStats.played - randomStats.won;
+                const fmtAttempts = (total, count) => count > 0 ? (total / count).toFixed(2) : '—';
+                const dailyAvgWinAttempts = fmtAttempts(dailyStats.totalWinAttempts, dailyStats.won);
+                const dailyAvgLossAttempts = fmtAttempts(dailyStats.totalLossAttempts, dailyLosses);
+                const randomAvgWinAttempts = fmtAttempts(randomStats.totalWinAttempts, randomStats.won);
+                const randomAvgLossAttempts = fmtAttempts(randomStats.totalLossAttempts, randomLosses);
                 
                 function msToTime(ms) {
                     if (!ms || ms <= 0) return '00:00';
@@ -1835,6 +1840,8 @@
                     <div>Current Streak: ${dailyStats.streak}</div>
                     <div>Max Streak: ${dailyStats.maxStreak}</div>
                     <div>Average Time: ${msToTime(dailyStats.avgTime)}</div>
+                    <div>Avg Attempts (Wins): ${dailyAvgWinAttempts}</div>
+                    <div>Avg Attempts (Losses): ${dailyAvgLossAttempts}</div>
                     <hr>
                     <h4>Random Mode</h4>
                     <div>Games Played: ${randomStats.played}</div>
@@ -1843,6 +1850,8 @@
                     <div>Current Streak: ${randomStats.streak}</div>
                     <div>Max Streak: ${randomStats.maxStreak}</div>
                     <div>Average Time: ${msToTime(randomStats.avgTime)}</div>
+                    <div>Avg Attempts (Wins): ${randomAvgWinAttempts}</div>
+                    <div>Avg Attempts (Losses): ${randomAvgLossAttempts}</div>
                 `;
                 
                 this.showModal('statsModal');
